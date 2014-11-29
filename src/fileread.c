@@ -37,6 +37,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	int txlen;
 	uint8_t rxbuffer[300];
 	int rxlen;
+	int already_received;
 
 	uint8_t unprotected[50];
 	int unprotectedlength;
@@ -60,6 +61,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
 
+	already_received=0;
 
 	unprotectedlength = 5;
 	memcpy(unprotected,"\x00\xb0\x00\x00\x04",unprotectedlength);
@@ -78,9 +80,13 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
+	already_received += 4;
+
+	uint8_t numberbytes = unprotected[1] + 2;
 
 	unprotectedlength = 5;
-	memcpy(unprotected,"\x00\xb0\x00\x04\x12",unprotectedlength);
+	memcpy(unprotected,"\x00\xb0\x00\x04\x00",unprotectedlength);
+	unprotected[4] = (numberbytes-already_received);
 	(*ssc_long)++;
 	mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
 	printhex("Transmit",txbuffer,txlen);
@@ -96,6 +102,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
+	already_received += numberbytes;
 
 	return 0;
 
