@@ -233,12 +233,17 @@ void mrtd_bac_decrypt_response(uint8_t *input, uint8_t *output, int length, int 
 	int tmplength;
 	char *tobedecrypted = input+3;
 	tmplength = length-16-3;
-	tmp = malloc(tmplength);
+	if(tmplength > 0){
+		tmp = malloc(tmplength);
 
-	mrtd_crypto_decrypt_3des(tobedecrypted,tmp,tmplength,ksenc);
+		mrtd_crypto_decrypt_3des(tobedecrypted,tmp,tmplength,ksenc);
 
-	mrtd_crypto_padding_remove(tmp,output,tmplength,outputlength);
+		mrtd_crypto_padding_remove(tmp,output,tmplength,outputlength);
 
-	free(tmp);
+		free(tmp);
+	}
+	else {
+		(*outputlength) = 0;
+	}
 }
 
