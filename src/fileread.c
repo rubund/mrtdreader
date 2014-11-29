@@ -80,8 +80,8 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
-	memcpy(output+already_received,unprotected,4);
-	already_received += 4;
+	memcpy(output+already_received,unprotected,unprotectedlength);
+	already_received += unprotectedlength;
 
 	uint8_t numberbytes = unprotected[1] + 2;
 
@@ -103,8 +103,8 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
-	memcpy(output+already_received,unprotected,numberbytes);
-	already_received += numberbytes-already_received;
+	memcpy(output+already_received,unprotected,unprotectedlength);
+	already_received += unprotectedlength;
 	(*outputlength) = already_received;
 
 	return 0;
