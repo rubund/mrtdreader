@@ -127,6 +127,10 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 	uint8_t padded_command[8];
 	uint8_t *A;
 	int padded_data_length;
+	int do87_length;
+	uint8_t *do97 = NULL;
+	int do97_length;
+	uint8_t le;
 
 	if(length > 5){
 		datalength = (int)input[4];
@@ -134,10 +138,14 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 	else{
 		datalength = 0;
 	}
-	if(datalength != 0 ? length > (5+datalength) : length == 5)
+	if(datalength != 0 ? length > (5+datalength) : length == 5){
+		le = input[length-1];
 		has_le = 1;
-	else
+	}
+	else{
+		le = 0;
 		has_le = 0;
+	}
 
 	printf("datalength: %d\n",datalength);
 	printf("hasle: %d\n",has_le);
@@ -152,11 +160,24 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 		do87[0] = 0x87;
 		do87[1] = 0x09;
 		do87[2] = 0x01;
+		do87_length = padded_data_length+3;
 
 		free(padded_data);
 	}
 	else{
+		do87_length = 0;
 		padded_data_length = 0;
+	}
+
+	if(has_le){
+		do97_length = 3;
+		do97 = malloc(do97_length);
+		do97[0] = 0x97;
+		do97[1] = 0x01;
+		do97[2] = le;
+	}
+	else{
+		do97_length = 0;
 	}
 
 	int padded_command_length;
@@ -164,7 +185,7 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 	padded_command[0] = 0x0c;
 
 
-	A = malloc(16+padded_data_length+3);
+	A = malloc(16+do87_length+do97_length);
 	A[0] = *(((uint8_t*)(&ssc_long))+7);
 	A[1] = *(((uint8_t*)(&ssc_long))+6);
 	A[2] = *(((uint8_t*)(&ssc_long))+5);
@@ -175,27 +196,33 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 	A[7] = *(((uint8_t*)(&ssc_long))+0);
 	memcpy(A+8,padded_command,8);
 	if(do87 != NULL)
-		memcpy(A+16,do87,padded_data_length+3);//padded_data_length+3);
+		memcpy(A+16,do87,do87_length);
+	if(do97 != NULL)
+		memcpy(A+16+do87_length,do97,do97_length);
 
 
 	do8e[0] = 0x8e;
 	do8e[1] = 0x08;
 
-	mrtd_crypto_mac_padding(A,do8e+2,16+padded_data_length+3,ksmac);
+	mrtd_crypto_mac_padding(A,do8e+2,16+do87_length+do97_length,ksmac);
 
+	(*outputlength) = 5+do87_length+do97_length+10+1;
 	memcpy(output,padded_command,4);
-	output[0] = 0x0c;
-	output[4] = 0x15;
+	output[4] = (*outputlength)-6;
 	if(do87 != NULL)
-		memcpy(output+5,do87,padded_data_length+3);
-	memcpy(output+5+padded_data_length+3,do8e,10);
-	(*outputlength) = 5+padded_data_length+3+10+1;
+		memcpy(output+5,do87,do87_length);
+	if(do97 != NULL)
+		memcpy(output+5+do87_length,do97,do97_length);
+	memcpy(output+5+do87_length+do97_length,do8e,10);
 	output[(*outputlength)-1] = 0x00;
 
+	printf("tot_length: %d\n",*outputlength);
 
 	free(A);
 	if(do87 != NULL)
 		free(do87);
+	if(do97 != NULL)
+		free(do97);
 
 	return ;
 }
