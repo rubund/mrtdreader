@@ -117,6 +117,7 @@ int main(int argc, char **argv)
 	int filecontentlength;
 
 	printf("Getting EF.COM...");
+	fflush(stdout);
 	mrtd_fileread_read(pnd,"\x01\x1e",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
 	printf(" done\n");
 
@@ -126,6 +127,7 @@ int main(int argc, char **argv)
 	printf("\n");
 
 	printf("Getting EF.DG1...");
+	fflush(stdout);
 	mrtd_fileread_read(pnd,"\x01\x01",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
 	printf(" done\n");
 
@@ -135,6 +137,7 @@ int main(int argc, char **argv)
 
 	printf("\n");
 	printf("Getting EF.DG2 which contains the image...");
+	fflush(stdout);
 	mrtd_fileread_read(pnd,"\x01\x02",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
 	printf(" done\n");
 
