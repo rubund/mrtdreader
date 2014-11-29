@@ -132,8 +132,10 @@ int main(int argc, char **argv)
 	else{
 		rxlen = res;
 	}
-	printhex("Received",rxbuffer,rxlen);
+	printhex("Received (encrypted)",rxbuffer,rxlen);
 	ssc_long++;
+	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
+	printhex("Received (decrypted)",unprotected,unprotectedlength);
 
 	unprotectedlength = 5;
 	memcpy(unprotected,"\x00\xb0\x00\x00\x04",unprotectedlength);
@@ -149,8 +151,10 @@ int main(int argc, char **argv)
 	else{
 		rxlen = res;
 	}
-	printhex("Received",rxbuffer,rxlen);
+	printhex("Received (encrypted)",rxbuffer,rxlen);
 	ssc_long++;
+	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
+	printhex("Received (decrypted)",unprotected,unprotectedlength);
 
 	nfc_close(pnd);
 	nfc_exit(context);

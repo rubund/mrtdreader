@@ -145,6 +145,39 @@ void mrtd_crypto_padding(uint8_t *input, uint8_t *output, int length, int *newle
 	memcpy(output,input,length);
 	output[length] = 0x80;
 }
+void mrtd_crypto_padding_remove(uint8_t *input, uint8_t *output, int length, int *newlength)
+{
+	int i;
+	int pos;
+	char found = 0;
+	for(i=length-1;i>=0;i--){
+		if(input[i] == 0x00) {
+			continue;
+		}
+		else if(input[i] == 0x80) {
+			pos = i;
+			found = 1;
+			break;
+		}
+		else {
+			goto failed;
+		}
+	}
+	if(found){
+		*newlength = pos;
+		memcpy(output,input,*newlength);
+	}
+	else{
+		goto failed;
+	}
+
+	return;
+
+	failed:
+		fprintf(stderr,"Does not seem to be a correctly padded word");
+		*newlength = 0;
+		return;
+}
 
 void mrtd_crypto_mac(uint8_t *input, uint8_t *output, int length, uint8_t *key)
 {

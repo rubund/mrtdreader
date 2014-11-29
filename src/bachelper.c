@@ -147,8 +147,8 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 		has_le = 0;
 	}
 
-	printf("datalength: %d\n",datalength);
-	printf("hasle: %d\n",has_le);
+	//printf("datalength: %d\n",datalength);
+	//printf("hasle: %d\n",has_le);
 	int i;
 
 	if(datalength != 0){
@@ -216,7 +216,7 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 	memcpy(output+5+do87_length+do97_length,do8e,10);
 	output[(*outputlength)-1] = 0x00;
 
-	printf("tot_length: %d\n",*outputlength);
+	//printf("tot_length: %d\n",*outputlength);
 
 	free(A);
 	if(do87 != NULL)
@@ -225,5 +225,20 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 		free(do97);
 
 	return ;
+}
+
+void mrtd_bac_decrypt_response(uint8_t *input, uint8_t *output, int length, int *outputlength, uint8_t *ksenc)
+{
+	uint8_t *tmp;
+	int tmplength;
+	char *tobedecrypted = input+3;
+	tmplength = length-16-3;
+	tmp = malloc(tmplength);
+
+	mrtd_crypto_decrypt_3des(tobedecrypted,tmp,tmplength,ksenc);
+
+	mrtd_crypto_padding_remove(tmp,output,tmplength,outputlength);
+
+	free(tmp);
 }
 

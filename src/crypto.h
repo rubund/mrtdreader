@@ -42,4 +42,6 @@ void mrtd_crypto_mac(uint8_t *input, uint8_t *output, int length, uint8_t *key);
 
 void mrtd_crypto_padding(uint8_t *input, uint8_t *output, int length, int *newlength);
 
+void mrtd_crypto_padding_remove(uint8_t *input, uint8_t *output, int length, int *newlength);
+
 #endif /* INC_BAC_CRYPTO_H */
