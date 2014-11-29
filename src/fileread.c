@@ -28,6 +28,7 @@
 #include "bachelper.h"
 
 
+#define MAXREAD 100
 
 
 int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
@@ -83,28 +84,61 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	memcpy(output+already_received,unprotected,unprotectedlength);
 	already_received += unprotectedlength;
 
-	uint8_t numberbytes = unprotected[1] + 2;
-
-	unprotectedlength = 5;
-	memcpy(unprotected,"\x00\xb0\x00\x04\x00",unprotectedlength);
-	unprotected[4] = (numberbytes-already_received);
-	(*ssc_long)++;
-	mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
-	printhex("Transmit",txbuffer,txlen);
-	rxlen = sizeof(rxbuffer);
-	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
-		fprintf(stderr,"Unable to send");
+	uint16_t numberbytes;
+	int field_length;
+	if(unprotected[1] <= 0x7f){
+		numberbytes = (uint16_t)unprotected[1];
+		field_length = 1;
+	}
+	else if(unprotected[1] == 0x81){
+		numberbytes = (uint16_t)unprotected[2];
+		field_length = 2;
+	}
+	else if(unprotected[1] == 0x82){
+		*(((uint8_t*)(&numberbytes))+1) = unprotected[2];
+		*(((uint8_t*)(&numberbytes))+0) = unprotected[3];
+		field_length = 3;
+	}
+	else {
+		fprintf(stderr,"Not correct field length");
 		goto failed;
 	}
-	else{
-		rxlen = res;
+	printf("numberbytes: %d\n",numberbytes);
+	
+	int left_to_read;
+	int readnow;
+	left_to_read = numberbytes - (3-field_length);
+
+	while (left_to_read > 0){
+		if(left_to_read > MAXREAD)
+			readnow = MAXREAD;
+		else
+			readnow = left_to_read;
+		unprotectedlength = 5;
+		memcpy(unprotected,"\x00\xb0\x00\x00\x00",unprotectedlength);
+			/* FIXME: This only works on little-endian systems */
+		unprotected[2] = *(((uint8_t*)&already_received)+1);
+		unprotected[3] = *(((uint8_t*)&already_received)+0);
+		unprotected[4] = readnow;
+		(*ssc_long)++;
+		mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
+		printhex("Transmit",txbuffer,txlen);
+		rxlen = sizeof(rxbuffer);
+		if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
+			fprintf(stderr,"Unable to send");
+			goto failed;
+		}
+		else{
+			rxlen = res;
+		}
+		printhex("Received (encrypted)",rxbuffer,rxlen);
+		(*ssc_long)++;
+		mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
+		printhex("Received (decrypted)",unprotected,unprotectedlength);
+		memcpy(output+already_received,unprotected,unprotectedlength);
+		already_received += unprotectedlength;
+		left_to_read -= unprotectedlength;
 	}
-	printhex("Received (encrypted)",rxbuffer,rxlen);
-	(*ssc_long)++;
-	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
-	printhex("Received (decrypted)",unprotected,unprotectedlength);
-	memcpy(output+already_received,unprotected,unprotectedlength);
-	already_received += unprotectedlength;
 	(*outputlength) = already_received;
 
 	return 0;
