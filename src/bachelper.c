@@ -117,3 +117,86 @@ uint64_t mrtd_bac_get_ssc(uint8_t *remote_challenge, uint8_t *rnd_ifd)
 	return ssc_long;
 }
 
+
+void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t ssc_long)
+{
+	int datalength;
+	char has_le;
+	uint8_t *do87 = NULL;
+	uint8_t do8e[10];
+	uint8_t padded_command[8];
+	uint8_t *A;
+	int padded_data_length;
+
+	if(length > 5){
+		datalength = (int)input[4];
+	}
+	else{
+		datalength = 0;
+	}
+	if(datalength != 0 ? length > (5+datalength) : length == 5)
+		has_le = 1;
+	else
+		has_le = 0;
+
+	printf("datalength: %d\n",datalength);
+	printf("hasle: %d\n",has_le);
+	int i;
+
+	if(datalength != 0){
+		uint8_t *padded_data;
+		padded_data = malloc(((datalength+8)/8)*8);
+		mrtd_crypto_padding(input+5,padded_data,datalength,&padded_data_length);
+		do87 = malloc(padded_data_length+3);
+		mrtd_crypto_encrypt_3des(padded_data,do87+3,padded_data_length,ksenc);
+		do87[0] = 0x87;
+		do87[1] = 0x09;
+		do87[2] = 0x01;
+
+		free(padded_data);
+	}
+	else{
+		padded_data_length = 0;
+	}
+
+	int padded_command_length;
+	mrtd_crypto_padding(input,padded_command,4,&padded_command_length);
+	padded_command[0] = 0x0c;
+
+
+	A = malloc(16+padded_data_length+3);
+	A[0] = *(((uint8_t*)(&ssc_long))+7);
+	A[1] = *(((uint8_t*)(&ssc_long))+6);
+	A[2] = *(((uint8_t*)(&ssc_long))+5);
+	A[3] = *(((uint8_t*)(&ssc_long))+4);
+	A[4] = *(((uint8_t*)(&ssc_long))+3);
+	A[5] = *(((uint8_t*)(&ssc_long))+2);
+	A[6] = *(((uint8_t*)(&ssc_long))+1);
+	A[7] = *(((uint8_t*)(&ssc_long))+0);
+	memcpy(A+8,padded_command,8);
+	if(do87 != NULL)
+		memcpy(A+16,do87,padded_data_length+3);//padded_data_length+3);
+
+
+	do8e[0] = 0x8e;
+	do8e[1] = 0x08;
+
+	mrtd_crypto_mac_padding(A,do8e+2,16+padded_data_length+3,ksmac);
+
+	memcpy(output,padded_command,4);
+	output[0] = 0x0c;
+	output[4] = 0x15;
+	if(do87 != NULL)
+		memcpy(output+5,do87,padded_data_length+3);
+	memcpy(output+5+padded_data_length+3,do8e,10);
+	(*outputlength) = 5+padded_data_length+3+10+1;
+	output[(*outputlength)-1] = 0x00;
+
+
+	free(A);
+	if(do87 != NULL)
+		free(do87);
+
+	return ;
+}
+

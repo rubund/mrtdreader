@@ -43,7 +43,7 @@ void printhex(char *description, uint8_t *input, int length)
 
 int main(int argc, char **argv)
 {
-	int i,ret;
+	int i,ret,res;
 	if(argc != 2){
 		fprintf(stderr,"Usage: %s <kmrz>\n",argv[0]);
 		exit(-1);
@@ -113,7 +113,44 @@ int main(int argc, char **argv)
 
 	printf("ssc: %lx\n",ssc_long);
 
+	uint8_t unprotected[50];
+	uint8_t protected[50];
+	int unprotectedlength;
+	int protectedlength;
 
+	unprotectedlength = 7;
+	memcpy(unprotected,"\x00\xa4\x02\x0c\x02\x01\x01",unprotectedlength);
+	ssc_long++;
+	mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,ssc_long);
+
+	printhex("Transmit",txbuffer,txlen);
+	rxlen = sizeof(rxbuffer);
+	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
+		fprintf(stderr,"Unable to send");
+		goto failed;
+	}
+	else{
+		rxlen = res;
+	}
+	printhex("Received",rxbuffer,rxlen);
+	ssc_long++;
+
+	unprotectedlength = 5;
+	memcpy(unprotected,"\x00\xb0\x00\x00\x04",unprotectedlength);
+	ssc_long++;
+	mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,ssc_long);
+
+	printhex("Transmit",txbuffer,txlen);
+	rxlen = sizeof(rxbuffer);
+	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
+		fprintf(stderr,"Unable to send");
+		goto failed;
+	}
+	else{
+		rxlen = res;
+	}
+	printhex("Received",rxbuffer,rxlen);
+	ssc_long++;
 
 	nfc_close(pnd);
 	nfc_exit(context);
