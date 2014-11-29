@@ -30,7 +30,7 @@
 
 
 
-int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
+int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
 {
 	int res;
 	uint8_t txbuffer[300];
@@ -39,7 +39,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	int rxlen;
 	int already_received;
 
-	uint8_t unprotected[50];
+	uint8_t unprotected[300];
 	int unprotectedlength;
 	unprotectedlength = 7;
 	memcpy(unprotected,"\x00\xa4\x02\x0c\x02\x01\x1e",5);
@@ -80,6 +80,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
+	memcpy(output+already_received,unprotected,4);
 	already_received += 4;
 
 	uint8_t numberbytes = unprotected[1] + 2;
@@ -102,7 +103,9 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *ksenc, uin
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
+	memcpy(output+already_received,unprotected,numberbytes);
 	already_received += numberbytes;
+	(*outputlength) = already_received;
 
 	return 0;
 
