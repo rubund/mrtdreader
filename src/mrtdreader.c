@@ -93,80 +93,18 @@ int main(int argc, char **argv)
 	uint8_t rxbuffer[300];
 	int rxlen;
 
-	txlen = 5;
-	memcpy(txbuffer, "\x00\x84\x00\x00\x08", txlen);
-	rxlen = sizeof(rxbuffer);
-	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
-		fprintf(stderr,"Unable to send");
-		goto failed;
-	}
-	else{
-		rxlen = res;
-	}
-
-	uint8_t remotechallenge[8];
-	memcpy(remotechallenge,rxbuffer,8);
-
-	txlen = 12;
-	memcpy(txbuffer, "\x00\xa4\x04\x0c\x07\xa0\x00\x00\x02\x47\x10\x01", txlen);
-	rxlen = sizeof(rxbuffer);
-	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
-		fprintf(stderr,"Unable to send");
-		goto failed;
-	}
-	else{
-		rxlen = res;
-	}
-
-	uint8_t kenc[16];
-	uint8_t kmac[16];
-
-	mrtd_bac_kmrz_to_kenc_kmac(kmrz,kenc,kmac);
-
-	uint8_t cmd_data[40];
-
-	mrtd_bac_cmd_data(rnd_ifd,kifd,remotechallenge,kenc,kmac,cmd_data);
-
-
-	txlen = 46;
-	memcpy(txbuffer, "\x00\x82\x00\x00\x28", 5);
-	memcpy(txbuffer+5,cmd_data,40);
-	txbuffer[45] = 0x28;
-	rxlen = sizeof(rxbuffer);
-	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
-		fprintf(stderr,"Unable to send");
-		goto failed;
-	}
-	else{
-		rxlen = res;
-	}
 
 	uint8_t rnd_icc[8];
 	uint8_t kicc[16];
-
-	if(mrtd_bac_challenge_ok(rxbuffer,kenc,rnd_ifd,rnd_icc,kicc)){
-		printf("======================\nChallenge successful!\n======================\n");
-	}
-	else {
-		printf("======================\nChallenge failed...\n======================\n");
-		goto failed;
-	}
-	uint8_t xored[16];
-
-	for(i=0;i<16;i++){
-		xored[i] = kifd[i] ^ kicc[i];
-	}
-
+	uint64_t ssc_long;
 	uint8_t ksenc[16];
 	uint8_t ksmac[16];
 
-	mrtd_bac_kenc_kmac(xored,ksenc,ksmac);
+	mrtd_bac_keyhandshake(pnd,kmrz,ksenc,ksmac,&ssc_long);
+
 
 	printhex("ksenc",ksenc,16);
 	printhex("ksmac",ksmac,16);
-
-	uint64_t ssc_long;
-	ssc_long = mrtd_bac_get_ssc(remotechallenge,rnd_ifd);
 
 	printf("ssc: %lx\n",ssc_long);
 
