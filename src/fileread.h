@@ -23,6 +23,6 @@
 
 int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long);
 
-
+void mrtd_fileread_write_image_to_file(uint8_t *file_content, int file_size, char *filename);
 
 #endif /* INC_FILEREAD_H */

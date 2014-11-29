@@ -117,12 +117,18 @@ int main(int argc, char **argv)
 
 	mrtd_fileread_read(pnd,"\x01\x1e",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
 
+	mrtd_fileread_read(pnd,"\x01\x01",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+
+	mrtd_fileread_read(pnd,"\x01\x02",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+
 	printf("\n");
 	printhex("File content",filecontent,filecontentlength);
 	printf("\n");
 	filecontent[filecontentlength] = 0;
 	printf("%s\n\n",filecontent);
 	printf("File size: %d\n",filecontentlength);
+
+	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image.jpg");
 
 	nfc_close(pnd);
 	nfc_exit(context);

@@ -146,3 +146,15 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	failed:
 		return -1;
 }
+
+void mrtd_fileread_write_image_to_file(uint8_t *file_content, int file_size, char *filename)
+{
+	FILE *out;
+	out = fopen(filename,"w");
+	int offset = 84;
+	fwrite(file_content+offset,1,file_size-offset,out);
+
+	fclose(out);
+}
+
+
