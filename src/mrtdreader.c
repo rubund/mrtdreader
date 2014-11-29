@@ -31,9 +31,6 @@
 
 #define MAX_DEVICE_COUNT 5
 
-char rnd_ifd[8] = {0x78,0x17,0x23,0x86,0x0c,0x06,0xc2,0x26};
-char kifd[16] = {0x0b,0x79,0x52,0x40,0xcb,0x70,0x49,0xb0,0x1c,0x19,0xb3,0x3e,0x32,0x80,0x4f,0x0b};
-
 void printhex(char *description, uint8_t *input, int length)
 {
 	int i;
@@ -46,7 +43,7 @@ void printhex(char *description, uint8_t *input, int length)
 
 int main(int argc, char **argv)
 {
-	int i,res;
+	int i,ret;
 	if(argc != 2){
 		fprintf(stderr,"Usage: %s <kmrz>\n",argv[0]);
 		exit(-1);
@@ -100,8 +97,16 @@ int main(int argc, char **argv)
 	uint8_t ksenc[16];
 	uint8_t ksmac[16];
 
-	mrtd_bac_keyhandshake(pnd,kmrz,ksenc,ksmac,&ssc_long);
+	ret = mrtd_bac_keyhandshake(pnd,kmrz,ksenc,ksmac,&ssc_long);
 
+	if(ret == RET_CHALLENGE_FAILED){
+		fprintf(stderr,"======================\nChallenge failed...\n======================\n");
+		goto failed;
+	}
+	else if(ret < 0){
+		goto failed;
+	}
+	printf("======================\nChallenge successful!\n======================\n");
 
 	printhex("ksenc",ksenc,16);
 	printhex("ksmac",ksmac,16);

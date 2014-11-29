@@ -24,6 +24,8 @@
 
 #include <stdint.h>
 
+#define RET_CHALLENGE_FAILED -2
+
 int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long);
 
 #endif /* INC_BAC_H */

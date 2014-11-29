@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <nfc/nfc.h>
 #include "bachelper.h"
+#include "bac.h"
 
 static char rnd_ifd[8] = {0x78,0x17,0x23,0x86,0x0c,0x06,0xc2,0x26};
 static char kifd[16] = {0x0b,0x79,0x52,0x40,0xcb,0x70,0x49,0xb0,0x1c,0x19,0xb3,0x3e,0x32,0x80,0x4f,0x0b};
@@ -88,10 +89,8 @@ int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_
 	uint8_t kicc[16];
 
 	if(mrtd_bac_challenge_ok(rxbuffer,kenc,rnd_ifd,rnd_icc,kicc)){
-		printf("======================\nChallenge successful!\n======================\n");
 	}
 	else {
-		printf("======================\nChallenge failed...\n======================\n");
 		goto challengefailed;
 	}
 	uint8_t xored[16];
@@ -115,6 +114,6 @@ int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_
 	failed:
 		return -1;
 	challengefailed:
-		return -2;
+		return RET_CHALLENGE_FAILED;
 }
 
