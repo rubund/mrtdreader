@@ -108,27 +108,39 @@ int main(int argc, char **argv)
 	}
 	printf("======================\nChallenge successful!\n======================\n");
 
-	printhex("ksenc",ksenc,16);
-	printhex("ksmac",ksmac,16);
+	//printhex("ksenc",ksenc,16);
+	//printhex("ksmac",ksmac,16);
 
-	printf("ssc: %lx\n",ssc_long);
+	//printf("ssc: %lx\n",ssc_long);
+	printf("\n");
 	uint8_t filecontent[17000];
 	int filecontentlength;
 
+	printf("Getting EF.COM...");
 	mrtd_fileread_read(pnd,"\x01\x1e",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+	printf(" done\n");
 
-	mrtd_fileread_read(pnd,"\x01\x01",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
-
-	mrtd_fileread_read(pnd,"\x01\x02",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
-
-	printf("\n");
 	printhex("File content",filecontent,filecontentlength);
+	printf("File size: %d\n",filecontentlength);
+
 	printf("\n");
+
+	printf("Getting EF.DG1...");
+	mrtd_fileread_read(pnd,"\x01\x01",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+	printf(" done\n");
+
 	filecontent[filecontentlength] = 0;
 	printf("%s\n\n",filecontent);
 	printf("File size: %d\n",filecontentlength);
 
+	printf("\n");
+	printf("Getting EF.DG2 which contains the image...");
+	mrtd_fileread_read(pnd,"\x01\x02",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+	printf(" done\n");
+
+
 	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image.jpg");
+	printf("Image saved to image.jpg\n");
 
 	nfc_close(pnd);
 	nfc_exit(context);

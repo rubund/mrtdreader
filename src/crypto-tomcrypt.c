@@ -174,7 +174,6 @@ void mrtd_crypto_padding_remove(uint8_t *input, uint8_t *output, int length, int
 	return;
 
 	failed:
-		fprintf(stderr,"Does not seem to be a correctly padded word");
 		*newlength = 0;
 		return;
 }

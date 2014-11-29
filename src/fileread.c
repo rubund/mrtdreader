@@ -48,7 +48,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	(*ssc_long)++;
 	mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
 
-	printhex("Transmit",txbuffer,txlen);
+	//printhex("Transmit",txbuffer,txlen);
 	rxlen = sizeof(rxbuffer);
 	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
 		fprintf(stderr,"Unable to send");
@@ -57,10 +57,10 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	else{
 		rxlen = res;
 	}
-	printhex("Received (encrypted)",rxbuffer,rxlen);
+	//printhex("Received (encrypted)",rxbuffer,rxlen);
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
-	printhex("Received (decrypted)",unprotected,unprotectedlength);
+	//printhex("Received (decrypted)",unprotected,unprotectedlength);
 
 	already_received=0;
 
@@ -68,7 +68,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	memcpy(unprotected,"\x00\xb0\x00\x00\x04",unprotectedlength);
 	(*ssc_long)++;
 	mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
-	printhex("Transmit",txbuffer,txlen);
+	//printhex("Transmit",txbuffer,txlen);
 	rxlen = sizeof(rxbuffer);
 	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
 		fprintf(stderr,"Unable to send");
@@ -77,10 +77,10 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	else{
 		rxlen = res;
 	}
-	printhex("Received (encrypted)",rxbuffer,rxlen);
+	//printhex("Received (encrypted)",rxbuffer,rxlen);
 	(*ssc_long)++;
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
-	printhex("Received (decrypted)",unprotected,unprotectedlength);
+	//printhex("Received (decrypted)",unprotected,unprotectedlength);
 	memcpy(output+already_received,unprotected,unprotectedlength);
 	already_received += unprotectedlength;
 
@@ -103,7 +103,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 		fprintf(stderr,"Not correct field length");
 		goto failed;
 	}
-	printf("numberbytes: %d\n",numberbytes);
+	//printf("numberbytes: %d\n",numberbytes);
 	
 	int left_to_read;
 	int readnow;
@@ -122,7 +122,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 		unprotected[4] = readnow;
 		(*ssc_long)++;
 		mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
-		printhex("Transmit",txbuffer,txlen);
+		//printhex("Transmit",txbuffer,txlen);
 		rxlen = sizeof(rxbuffer);
 		if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
 			fprintf(stderr,"Unable to send");
@@ -131,10 +131,10 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 		else{
 			rxlen = res;
 		}
-		printhex("Received (encrypted)",rxbuffer,rxlen);
+		//printhex("Received (encrypted)",rxbuffer,rxlen);
 		(*ssc_long)++;
 		mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
-		printhex("Received (decrypted)",unprotected,unprotectedlength);
+		//printhex("Received (decrypted)",unprotected,unprotectedlength);
 		memcpy(output+already_received,unprotected,unprotectedlength);
 		already_received += unprotectedlength;
 		left_to_read -= unprotectedlength;
