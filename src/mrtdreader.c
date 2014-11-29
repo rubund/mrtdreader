@@ -24,12 +24,26 @@
 #include <string.h>
 #include <stdint.h>
 #include <nfc/nfc.h>
+#include <signal.h>
 #include "crypto.h"
 #include "bac.h"
 #include "bachelper.h"
 #include "fileread.h"
 
 #define MAX_DEVICE_COUNT 5
+
+static nfc_context *context = NULL;
+static nfc_device *pnd = NULL;
+
+void closedown(int sig)
+{
+	printf("Stopping...\n");
+	if(pnd != NULL)
+		nfc_close(pnd);
+	if(context != NULL)
+		nfc_exit(context);
+	exit(-1);
+}
 
 void printhex(char *description, uint8_t *input, int length)
 {
@@ -50,9 +64,9 @@ int main(int argc, char **argv)
 	}
 	uint8_t *kmrz = argv[1];
 
-	nfc_context *context = NULL;
+	signal(SIGINT, closedown);
+
 	nfc_init(&context);
-	nfc_device *pnd = NULL;
 	nfc_target ant;
 
 	if(context == NULL){
