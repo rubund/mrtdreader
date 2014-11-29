@@ -104,7 +104,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 	mrtd_bac_decrypt_response(rxbuffer,unprotected,rxlen,&unprotectedlength,ksenc);
 	printhex("Received (decrypted)",unprotected,unprotectedlength);
 	memcpy(output+already_received,unprotected,numberbytes);
-	already_received += numberbytes;
+	already_received += numberbytes-already_received;
 	(*outputlength) = already_received;
 
 	return 0;

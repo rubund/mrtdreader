@@ -112,8 +112,16 @@ int main(int argc, char **argv)
 	printhex("ksmac",ksmac,16);
 
 	printf("ssc: %lx\n",ssc_long);
+	uint8_t filecontent[500];
+	int filecontentlength;
 
-	mrtd_fileread_read(pnd,"\x01\x1e",ksenc,ksmac,&ssc_long);
+	mrtd_fileread_read(pnd,"\x01\x1e",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+
+	printf("\n");
+	printhex("File content",filecontent,filecontentlength);
+	printf("\n");
+	filecontent[filecontentlength] = 0;
+	printf("%s\n\n",filecontent);
 
 	nfc_close(pnd);
 	nfc_exit(context);
