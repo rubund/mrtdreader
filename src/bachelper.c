@@ -28,6 +28,15 @@
 #include "crypto.h"
 
 
+static int endianness(){
+	int i = 1;
+	char *p = (char *)&i;
+	if(p[0] == 1)
+		return 0;
+	else
+		return 1;
+}
+
 void mrtd_bac_kenc_kmac(uint8_t *input, uint8_t *kenc, uint8_t *kmac)
 {
 	uint8_t hash[20];
@@ -93,10 +102,6 @@ char mrtd_bac_challenge_ok(uint8_t *rx_data, uint8_t *kenc, uint8_t *rnd_ifd, ui
 	return 1;
 }
 
-/*
- *  The following function only works for little-endian systems
- *
- */
 uint64_t mrtd_bac_get_ssc(uint8_t *remote_challenge, uint8_t *rnd_ifd)
 {
 	char ssc[8];
@@ -105,14 +110,26 @@ uint64_t mrtd_bac_get_ssc(uint8_t *remote_challenge, uint8_t *rnd_ifd)
 	memcpy(ssc,remote_challenge+4,4);
 	memcpy(ssc+4,rnd_ifd+4,4);
 
-	*(((unsigned char*)(&ssc_long))+7) = ssc[0];
-	*(((unsigned char*)(&ssc_long))+6) = ssc[1];
-	*(((unsigned char*)(&ssc_long))+5) = ssc[2];
-	*(((unsigned char*)(&ssc_long))+4) = ssc[3];
-	*(((unsigned char*)(&ssc_long))+3) = ssc[4];
-	*(((unsigned char*)(&ssc_long))+2) = ssc[5];
-	*(((unsigned char*)(&ssc_long))+1) = ssc[6];
-	*(((unsigned char*)(&ssc_long))+0) = ssc[7];
+	if(endianness()){
+		*(((uint8_t*)(&ssc_long))+0) = ssc[0];
+		*(((uint8_t*)(&ssc_long))+1) = ssc[1];
+		*(((uint8_t*)(&ssc_long))+2) = ssc[2];
+		*(((uint8_t*)(&ssc_long))+3) = ssc[3];
+		*(((uint8_t*)(&ssc_long))+4) = ssc[4];
+		*(((uint8_t*)(&ssc_long))+5) = ssc[5];
+		*(((uint8_t*)(&ssc_long))+6) = ssc[6];
+		*(((uint8_t*)(&ssc_long))+7) = ssc[7];
+	}
+	else {
+		*(((uint8_t*)(&ssc_long))+7) = ssc[0];
+		*(((uint8_t*)(&ssc_long))+6) = ssc[1];
+		*(((uint8_t*)(&ssc_long))+5) = ssc[2];
+		*(((uint8_t*)(&ssc_long))+4) = ssc[3];
+		*(((uint8_t*)(&ssc_long))+3) = ssc[4];
+		*(((uint8_t*)(&ssc_long))+2) = ssc[5];
+		*(((uint8_t*)(&ssc_long))+1) = ssc[6];
+		*(((uint8_t*)(&ssc_long))+0) = ssc[7];
+	}
 
 	return ssc_long;
 }
@@ -186,14 +203,26 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 
 
 	A = malloc(16+do87_length+do97_length);
-	A[0] = *(((uint8_t*)(&ssc_long))+7);
-	A[1] = *(((uint8_t*)(&ssc_long))+6);
-	A[2] = *(((uint8_t*)(&ssc_long))+5);
-	A[3] = *(((uint8_t*)(&ssc_long))+4);
-	A[4] = *(((uint8_t*)(&ssc_long))+3);
-	A[5] = *(((uint8_t*)(&ssc_long))+2);
-	A[6] = *(((uint8_t*)(&ssc_long))+1);
-	A[7] = *(((uint8_t*)(&ssc_long))+0);
+	if(endianness()){
+		A[0] = *(((uint8_t*)(&ssc_long))+0);
+		A[1] = *(((uint8_t*)(&ssc_long))+1);
+		A[2] = *(((uint8_t*)(&ssc_long))+2);
+		A[3] = *(((uint8_t*)(&ssc_long))+3);
+		A[4] = *(((uint8_t*)(&ssc_long))+4);
+		A[5] = *(((uint8_t*)(&ssc_long))+5);
+		A[6] = *(((uint8_t*)(&ssc_long))+6);
+		A[7] = *(((uint8_t*)(&ssc_long))+7);
+	}
+	else {
+		A[0] = *(((uint8_t*)(&ssc_long))+7);
+		A[1] = *(((uint8_t*)(&ssc_long))+6);
+		A[2] = *(((uint8_t*)(&ssc_long))+5);
+		A[3] = *(((uint8_t*)(&ssc_long))+4);
+		A[4] = *(((uint8_t*)(&ssc_long))+3);
+		A[5] = *(((uint8_t*)(&ssc_long))+2);
+		A[6] = *(((uint8_t*)(&ssc_long))+1);
+		A[7] = *(((uint8_t*)(&ssc_long))+0);
+	}
 	memcpy(A+8,padded_command,8);
 	if(do87 != NULL)
 		memcpy(A+16,do87,do87_length);

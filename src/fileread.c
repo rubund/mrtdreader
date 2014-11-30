@@ -30,6 +30,14 @@
 
 #define MAXREAD 100
 
+static int endianness(){
+	int i = 1;
+	char *p = (char *)&i;
+	if(p[0] == 1)
+		return 0;
+	else
+		return 1;
+}
 
 int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
 {
@@ -117,8 +125,14 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 		unprotectedlength = 5;
 		memcpy(unprotected,"\x00\xb0\x00\x00\x00",unprotectedlength);
 			/* FIXME: This only works on little-endian systems */
-		unprotected[2] = *(((uint8_t*)&already_received)+1);
-		unprotected[3] = *(((uint8_t*)&already_received)+0);
+		if(endianness()){
+			unprotected[2] = *(((uint8_t*)&already_received)+0);
+			unprotected[3] = *(((uint8_t*)&already_received)+1);
+		}
+		else {
+			unprotected[2] = *(((uint8_t*)&already_received)+1);
+			unprotected[3] = *(((uint8_t*)&already_received)+0);
+		}
 		unprotected[4] = readnow;
 		(*ssc_long)++;
 		mrtd_bac_protected_apdu(unprotected,txbuffer,unprotectedlength,&txlen,ksenc,ksmac,*ssc_long);
