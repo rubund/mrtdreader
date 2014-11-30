@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <nfc/nfc.h>
 #include <signal.h>
 #include "mrtd.h"
@@ -31,6 +32,11 @@
 
 static nfc_context *context = NULL;
 static nfc_device *pnd = NULL;
+
+static char *pn = NULL;
+static char *dob = NULL;
+static char *eov = NULL;
+static char *extra_argument = NULL;
 
 void closedown(int sig)
 {
@@ -52,28 +58,78 @@ void printhex(char *description, uint8_t *input, int length)
 	printf("\n");
 }
 
+int parse_cmdline(int argc, char **argv)
+{
+	int s;
+	opterr = 0;
+	while((s = getopt(argc, argv, "p:b:e:")) != -1) {
+		switch (s) {
+			case 'p':
+				pn = malloc(strlen(optarg)+1);
+				memcpy(pn,optarg,strlen(optarg));
+				break;
+			case 'b':
+				dob = malloc(strlen(optarg)+1);
+				memcpy(dob,optarg,strlen(optarg));
+				break;
+			case 'e':
+				eov = malloc(strlen(optarg)+1);
+				memcpy(eov,optarg,strlen(optarg));
+				break;
+			case '?':
+				if(optopt == 'p')
+					fprintf(stderr, "Option -%c requires an argument.\n",optopt);
+				else if(optopt == 'b')
+					fprintf(stderr, "Option -%c requires an argument.\n",optopt);
+				else if(optopt == 'e')
+					fprintf(stderr, "Option -%c requires an argument.\n",optopt);
+				else if(isprint(optopt)) 
+					fprintf(stderr, "Unknown option '-%c'.\n",optopt);
+				return -1;
+			default:
+				abort();
+		}
+	}
+
+	if(argc == (optind + 1)){
+		extra_argument = argv[optind];
+	}
+	if((extra_argument == NULL) && ((pn == NULL) || (dob == NULL) || (eov == NULL))){
+		return -1;
+	}
+
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
 	int i,ret,res;
-	if(argc != 2){
-		fprintf(stderr,"Usage: %s <MRZ>\n",argv[0]);
-		exit(-1);
+	if(parse_cmdline(argc,argv) == -1){
+		fprintf(stderr,"Usage: %s [options] <MRZ>\n",argv[0]);
+		goto failed;
 	}
 	uint8_t *kmrz;
 	uint8_t buffer[25];
 	int inlength;
-	inlength = strlen(argv[1]);
-
-	if(inlength == 24){
-		kmrz = argv[1];
+	if(extra_argument != NULL){
+		inlength = strlen(extra_argument);
+		if(inlength == 24){
+			kmrz = extra_argument;
+		}
+		else if(inlength == 44){
+			mrtd_bac_get_kmrz_from_mrz(extra_argument, buffer);
+			kmrz = buffer;
+		}
+		else{
+			fprintf(stderr,"Did not recognize <MRZ>\n");
+			goto failed;
+		}
 	}
-	else if(inlength == 44){
-		mrtd_bac_get_kmrz_from_mrz(argv[1], buffer);
+	else {
+		mrtd_bac_get_kmrz(pn, dob, eov, buffer);
 		kmrz = buffer;
 	}
-	else{
-		kmrz = NULL;
-	}
+
 
 	signal(SIGINT, closedown);
 
