@@ -25,10 +25,7 @@
 #include <stdint.h>
 #include <nfc/nfc.h>
 #include <signal.h>
-#include "crypto.h"
-#include "bac.h"
-#include "bachelper.h"
-#include "fileread.h"
+#include "../include/mrtd.h"
 
 #define MAX_DEVICE_COUNT 5
 
