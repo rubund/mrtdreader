@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 {
 	int i,ret,res;
 	if(argc != 2){
-		fprintf(stderr,"Usage: %s <kmrz>\n",argv[0]);
+		fprintf(stderr,"Usage: %s <MRZ>\n",argv[0]);
 		exit(-1);
 	}
 	uint8_t *kmrz;
