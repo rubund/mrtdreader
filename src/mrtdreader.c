@@ -171,9 +171,6 @@ int main(int argc, char **argv)
 	uint8_t rxbuffer[300];
 	int rxlen;
 
-
-	uint8_t rnd_icc[8];
-	uint8_t kicc[16];
 	uint64_t ssc_long;
 	uint8_t ksenc[16];
 	uint8_t ksmac[16];
@@ -189,10 +186,6 @@ int main(int argc, char **argv)
 	}
 	printf("======================\nChallenge successful!\n======================\n");
 
-	//printhex("ksenc",ksenc,16);
-	//printhex("ksmac",ksmac,16);
-
-	//printf("ssc: %lx\n",ssc_long);
 	printf("\n");
 	uint8_t filecontent[17000];
 	int filecontentlength;
