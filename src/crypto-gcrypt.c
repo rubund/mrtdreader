@@ -35,9 +35,12 @@ void mrtd_crypto_sha1(uint8_t *input, int length, uint8_t *output)
 void mrtd_crypto_crypt_des(uint8_t *input, uint8_t *output, int length, uint8_t *key, char encrypt)
 {
 	int err;
+	uint8_t iv[8];
+	memset(iv,0,8);
 	gcry_cipher_hd_t handle;
 	err = gcry_cipher_open(&handle, GCRY_CIPHER_DES,GCRY_CIPHER_MODE_CBC,0);
 	err = gcry_cipher_setkey(handle, key,8);
+	err = gcry_cipher_setiv(handle, iv, 8);
 	if(encrypt)
 		err = gcry_cipher_encrypt(handle,output,length,input,length);
 	else
@@ -60,11 +63,14 @@ void mrtd_crypto_crypt_3des(uint8_t *input, uint8_t *output, int length, uint8_t
 {
 	int err;
 	uint8_t longkey[24];
+	uint8_t iv[8];
+	memset(iv,0,8);
 	memcpy(longkey,key,16);
 	memcpy(longkey+16,key,8);
 	gcry_cipher_hd_t handle;
 	err = gcry_cipher_open(&handle, GCRY_CIPHER_3DES,GCRY_CIPHER_MODE_CBC,0);
 	err = gcry_cipher_setkey(handle, longkey,24);
+	err = gcry_cipher_setiv(handle, iv, 8);
 	if(encrypt)
 		err = gcry_cipher_encrypt(handle,output,length,input,length);
 	else
