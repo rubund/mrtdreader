@@ -50,6 +50,8 @@ int mrtd_bac_check_digit(uint8_t *input, int length);
 
 void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output);
 
+void mrtd_bac_get_kmrz_from_mrz(uint8_t *mrz, uint8_t *kmrz);
+
 /* crypto */
 void mrtd_crypto_sha1(uint8_t *input, int length, uint8_t *output);
 

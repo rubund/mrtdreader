@@ -335,3 +335,18 @@ void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output)
 	
 }
 
+void mrtd_bac_get_kmrz_from_mrz(uint8_t *mrz, uint8_t *kmrz)
+{
+	uint8_t pn[9];
+	uint8_t dob[6];
+	uint8_t eov[6];
+
+	memcpy(pn,mrz,9);
+	memcpy(dob,mrz+13,6);
+	memcpy(eov,mrz+21,6);
+	
+	mrtd_bac_get_kmrz(pn,dob,eov,kmrz);
+
+}
+
+

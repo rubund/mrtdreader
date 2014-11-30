@@ -62,7 +62,21 @@ int main(int argc, char **argv)
 		fprintf(stderr,"Usage: %s <kmrz>\n",argv[0]);
 		exit(-1);
 	}
-	uint8_t *kmrz = argv[1];
+	uint8_t *kmrz;
+	uint8_t buffer[25];
+	int inlength;
+	inlength = strlen(argv[1]);
+
+	if(inlength == 24){
+		kmrz = argv[1];
+	}
+	else if(inlength == 44){
+		mrtd_bac_get_kmrz_from_mrz(argv[1], buffer);
+		kmrz = buffer;
+	}
+	else{
+		kmrz = NULL;
+	}
 
 	signal(SIGINT, closedown);
 
