@@ -304,3 +304,34 @@ int mrtd_bac_check_digit(uint8_t *input, int length)
 	return (check_digit % 10);
 }
 
+void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output)
+{
+	uint8_t tmp[20];
+	int cd;
+	int len;
+
+	printf("pn[0]: %c\n",pn[0]);
+	len = strlen(pn);
+	printf("len %d\n",len);
+	if (len < 9){
+		memcpy(output,pn,len);
+		memset(output+len,'<',9-len);
+	}
+	else {
+		memcpy(output,pn,9);
+	}
+	
+	cd = mrtd_bac_check_digit(output,9);
+	output[9] = (uint8_t)(cd+0x30);
+
+	memcpy(output+10,dob,6);
+	cd = mrtd_bac_check_digit(dob,6);
+	output[16] = (uint8_t)(cd+0x30);
+
+	memcpy(output+17,eov,6);
+	cd = mrtd_bac_check_digit(eov,6);
+	output[23] = (uint8_t)(cd+0x30);
+	output[24] = 0;
+	
+}
+

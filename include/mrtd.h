@@ -48,6 +48,8 @@ void mrtd_bac_decrypt_response(uint8_t *input, uint8_t *output, int length, int 
 
 int mrtd_bac_check_digit(uint8_t *input, int length);
 
+void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output);
+
 /* crypto */
 void mrtd_crypto_sha1(uint8_t *input, int length, uint8_t *output);
 
