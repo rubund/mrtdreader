@@ -276,3 +276,31 @@ void mrtd_bac_decrypt_response(uint8_t *input, uint8_t *output, int length, int 
 	}
 }
 
+static int mrtd_get_mrz_weight(int i)
+{
+	switch(i){
+	case(0): return 7;
+	case(1): return 3;
+	case(2): return 1;
+	}
+}
+
+int mrtd_bac_check_digit(uint8_t *input, int length)
+{
+	int i;
+	int tmp;
+	int out_value;
+	int check_digit;
+	check_digit = 0;
+	for(i=0;i<length;i++){
+		if (input[i] >= 'A' && input[i] <= 'Z')
+			tmp = input[i] - 55;
+		else if (input[i] == '<')
+			tmp = 0;
+		else
+			tmp = input[i] - 0x30;
+		check_digit += tmp * mrtd_get_mrz_weight(i % 3);
+	}
+	return (check_digit % 10);
+}
+

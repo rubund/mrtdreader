@@ -39,4 +39,6 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 
 void mrtd_bac_decrypt_response(uint8_t *input, uint8_t *output, int length, int *outputlength, uint8_t *ksenc);
 
+int mrtd_bac_check_digit(uint8_t *input, int length);
+
 #endif /* INC_BAC_HELPER_H */
