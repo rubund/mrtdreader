@@ -7,5 +7,9 @@ target_link_libraries(mrtdreader mrtd)
 set_target_properties(mrtd PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 install(TARGETS mrtdreader DESTINATION bin)
-install(TARGETS mrtd DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE})
+if(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr")
+ install(TARGETS mrtd DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE})
+else()
+ install(TARGETS mrtd DESTINATION lib)
+endif()
 
