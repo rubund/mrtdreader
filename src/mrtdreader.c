@@ -235,6 +235,12 @@ int main(int argc, char **argv)
 			nfc_close(pnd);
 		if(context != NULL)
 			nfc_exit(context);
+		if(pn != NULL)
+			free(pn);
+		if(dob != NULL)
+			free(dob);
+		if(eov != NULL)
+			free(eov);
 		return -1;
 }
 
