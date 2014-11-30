@@ -41,15 +41,19 @@ void mrtd_bac_kenc_kmac(uint8_t *input, uint8_t *kenc, uint8_t *kmac)
 {
 	uint8_t hash[20];
 	uint8_t k[20];
+	uint8_t kenc_tmp[20];
+	uint8_t kmac_tmp[20];
 	int tmp;
 	memcpy(hash,input,16);
 	memcpy(hash+16,"\x00\x00\x00\x01",4);
 	mrtd_crypto_sha1(hash,20,k);
-	mrtd_crypto_fix_parity(k,kenc,20,&tmp);
+	mrtd_crypto_fix_parity(k,kenc_tmp,20,&tmp);
+	memcpy(kenc,kenc_tmp,16);
 
 	hash[19] = 0x02;
 	mrtd_crypto_sha1(hash,20,k);
-	mrtd_crypto_fix_parity(k,kmac,20,&tmp);
+	mrtd_crypto_fix_parity(k,kmac_tmp,20,&tmp);
+	memcpy(kmac,kmac_tmp,16);
 }
 
 void mrtd_bac_kmrz_to_kenc_kmac(uint8_t *kmrz, uint8_t *kenc, uint8_t *kmac)
