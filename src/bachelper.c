@@ -310,9 +310,7 @@ void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output)
 	int cd;
 	int len;
 
-	printf("pn[0]: %c\n",pn[0]);
 	len = strlen(pn);
-	printf("len %d\n",len);
 	if (len < 9){
 		memcpy(output,pn,len);
 		memset(output+len,'<',9-len);
