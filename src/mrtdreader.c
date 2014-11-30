@@ -25,7 +25,7 @@
 #include <stdint.h>
 #include <nfc/nfc.h>
 #include <signal.h>
-#include "../include/mrtd.h"
+#include "mrtd.h"
 
 #define MAX_DEVICE_COUNT 5
 

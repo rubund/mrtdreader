@@ -1,5 +1,6 @@
 add_library(mrtd SHARED bac.c bachelper.c fileread.c hardware.c crypto-gcrypt.c)
-target_link_libraries(mrtd nfc usb)
+target_link_libraries(mrtd nfc)
+target_link_libraries(mrtd usb)
 target_link_libraries(mrtd gcrypt)
 
 add_executable(mrtdreader mrtdreader.c)
@@ -14,3 +15,8 @@ else()
  install(TARGETS mrtd DESTINATION lib)
 endif()
 
+install(FILES mrtd.h DESTINATION include/mrtd)
+install(FILES bac.h DESTINATION include/mrtd)
+install(FILES bachelper.h DESTINATION include/mrtd)
+install(FILES crypto.h DESTINATION include/mrtd)
+install(FILES fileread.h DESTINATION include/mrtd)
