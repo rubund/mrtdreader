@@ -103,8 +103,14 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 		field_length = 2;
 	}
 	else if(unprotected[1] == 0x82){
-		*(((uint8_t*)(&numberbytes))+1) = unprotected[2];
-		*(((uint8_t*)(&numberbytes))+0) = unprotected[3];
+		if(endianness()){
+			*(((uint8_t*)(&numberbytes))+0) = unprotected[2];
+			*(((uint8_t*)(&numberbytes))+1) = unprotected[3];
+		}
+		else {
+			*(((uint8_t*)(&numberbytes))+1) = unprotected[2];
+			*(((uint8_t*)(&numberbytes))+0) = unprotected[3];
+		}
 		field_length = 3;
 	}
 	else {
@@ -124,7 +130,6 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 			readnow = left_to_read;
 		unprotectedlength = 5;
 		memcpy(unprotected,"\x00\xb0\x00\x00\x00",unprotectedlength);
-			/* FIXME: This only works on little-endian systems */
 		if(endianness()){
 			unprotected[2] = *(((uint8_t*)&already_received)+0);
 			unprotected[3] = *(((uint8_t*)&already_received)+1);
