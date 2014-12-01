@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9),
                pkg-config,
                libnfc-dev,
                libgcrypt20-dev
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Vcs-Browser: https://github.com/rubund/mrtdreader/tree/debian
 Vcs-Git: git://github.com/rubund/mrtdreader.git -b debian
 Homepage: https://github.com/rubund/mrtdreader
