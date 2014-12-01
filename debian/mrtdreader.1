@@ -1,0 +1,61 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH MRTDREADER 1 "December 01, 2014"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+mrtdreader \- Reader for machine-readable travel documents (MRTDs / passports)
+.SH SYNOPSIS
+.B mrtdreader
+.RI [ options ]
+.RI < MRZ >
+.SH DESCRIPTION
+This manual page documents briefly the
+.B mrtdreader
+command.
+.PP
+\fBmrtdreader\fP is a program which takes as input the content of the Machine-readable zone (MRZ) of Machine-readable travel documents (MRTD) and then reads out some data from the MRTD via RFID/NFC and dumps the facial image to a file. 
+
+MRTDs such as passports nowadays usually contain an RFID chip for storing various data. The Basic Access Control (BAC) scheme is supported via the library libmrtd and mrtdreader is the example program delivered together with libmrtd. It uses several cryptographic functions in order to do the necessary decryption of the content of the MRTDs. The key for the BAC-scheme is derived from the Machine-readable zone (MRZ) which is printed on the MRTD.
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+.SH OPTIONS
+If the MRZ is specified on the command line, the following options are ignored. If the MRZ is not specified, all the three following options must be specified and the MRZ will be calculated from them.
+.TP
+.B \-p <passport-number>
+With this parameter, the passport number can be specified. It consists of maximum 9 ASCII letters or digits. Not that if this one is specified, also
+.B -b
+and
+.B -e
+must be specified.
+.TP
+.B \-b <date-of-birth>
+Specify the date of birth in the format YYMMDD. Not that if this one is specified, also
+.B -p
+and
+.B -e
+must be specified.
+.TP
+.B \-e <expiration-date>
+Specify the expiration date in the format YYMMDD. Not that if this one is specified, also
+.B -p
+and
+.B -b
+must be specified.
+.br
+.SH AUTHOR
+This manual page was written by Ruben Undheim <ruben.undheim@gmail.com>,
+for the Debian project (and may be used by others).
