@@ -5,8 +5,8 @@ Maintainer: Ruben Undheim <ruben.undheim@gmail.com>
 Build-Depends: debhelper (>= 9), cmake, pkg-config, libnfc-dev,
                libgcrypt20-dev
 Standards-Version: 3.9.6
-#Vcs-Git: git://anonscm.debian.org/pkg-grass/fyba.git
-#Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-grass/fyba.git
+Vcs-Git: git://github.com/rubund/mrtdreader.git -b debian
+Vcs-Browser: https://github.com/rubund/mrtdreader/tree/debian
 Homepage: https://github.com/rubund/mrtdreader
 
 Package: libmrtd0
@@ -14,17 +14,38 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
-Description: MRTD - Machine-readable travel document reader library
- Bla blah
+Description: MRTD - Machine-readable travel document library
+ Machine-readable travel documents such as passports nowadays usually contain
+ an RFID chip for storing various data. This library provides of useful
+ functions for reading out the data from these documents. This version of the
+ library supports the Basic Access Control (BAC). It uses several cryptographic
+ functions from either libgcrypt or libtomcrypt (depending on compile-time
+ options) in order to do the necessary decryption of the content on the MRTDs.
+ The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
+ which is printed on the MRTD.
+ .
+ The library depends on libnfc for the hardware interaction and only devices
+ supported by libnfc will therefore work.
 
 Package: libmrtd-dev
 Section: libdevel
 Architecture: any
 Depends: libmrtd0 (= ${binary:Version}), ${misc:Depends}
-Description: Header files for FYBA library
- This is the development package for developing applications that depends on
- libfyba. It includes header files, static library files and HTML
- documentation.
+Description: Development files for libmrtd0
+ Machine-readable travel documents such as passports nowadays usually contain
+ an RFID chip for storing various data. This library provides of useful
+ functions for reading out the data from these documents. This version of the
+ library supports the Basic Access Control (BAC). It uses several cryptographic
+ functions from either libgcrypt or libtomcrypt (depending on compile-time
+ options) in order to do the necessary decryption of the content on the MRTDs.
+ The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
+ which is printed on the MRTD.
+ .
+ The library depends on libnfc for the hardware interaction and only devices
+ supported by libnfc will therefore work.
+ .
+ This package contains header files for building programs linked with
+ libmrtd0.
 
 Package: libmrtd0-dbg
 Architecture: any
@@ -32,8 +53,28 @@ Section: debug
 Priority: extra
 Depends: libmrtd0 (= ${binary:Version}), ${misc:Depends}
 Description: debug symbols for libmrtd0
+ Machine-readable travel documents such as passports nowadays usually contain
+ an RFID chip for storing various data. This library provides of useful
+ functions for reading out the data from these documents. This version of the
+ library supports the Basic Access Control (BAC). It uses several cryptographic
+ functions from either libgcrypt or libtomcrypt (depending on compile-time
+ options) in order to do the necessary decryption of the content on the MRTDs.
+ The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
+ which is printed on the MRTD.
+ .
+ The library depends on libnfc for the hardware interaction and only devices
+ supported by libnfc will therefore work.
+ .
+ This package contains symbol tables for debugging.
 
 Package: mrtdreader
 Architecture: any
 Depends: libmrtd0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
-Description: Reader for machine-readable travel documents
+Description: Reader for machine-readable travel documents (MRTDs / passports)
+ This program takes as input the content of the machine-readable zone of
+ machine-readable travel documents and then reads out some data and dumps the
+ facial image to a file.
+ .
+ It is the example application delivered together with libmrtd.
+ .
+ Only reader devices which are fully supported by libnfc will work.
