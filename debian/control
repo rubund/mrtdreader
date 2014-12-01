@@ -1,0 +1,39 @@
+Source: mrtdreader
+Section: utils
+Priority: optional
+Maintainer: Ruben Undheim <ruben.undheim@gmail.com>
+Build-Depends: debhelper (>= 9), cmake, pkg-config, libnfc-dev,
+               libgcrypt20-dev
+Standards-Version: 3.9.6
+#Vcs-Git: git://anonscm.debian.org/pkg-grass/fyba.git
+#Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-grass/fyba.git
+Homepage: https://github.com/rubund/mrtdreader
+
+Package: libmrtd0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Description: MRTD - Machine-readable travel document reader library
+ Bla blah
+
+Package: libmrtd-dev
+Section: libdevel
+Architecture: any
+Depends: libmrtd0 (= ${binary:Version}), ${misc:Depends}
+Description: Header files for FYBA library
+ This is the development package for developing applications that depends on
+ libfyba. It includes header files, static library files and HTML
+ documentation.
+
+Package: libmrtd0-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: libmrtd0 (= ${binary:Version}), ${misc:Depends}
+Description: debug symbols for libmrtd0
+
+Package: mrtdreader
+Architecture: any
+Depends: libmrtd0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Reader for machine-readable travel documents
