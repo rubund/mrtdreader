@@ -16,11 +16,11 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Description: MRTD - Machine-readable travel document library
  Machine-readable travel documents such as passports nowadays usually contain
- an RFID chip for storing various data. This library provides of useful
+ an RFID chip for storing various data. This library provides useful
  functions for reading out the data from these documents. This version of the
  library supports the Basic Access Control (BAC). It uses several cryptographic
  functions from either libgcrypt or libtomcrypt (depending on compile-time
- options) in order to do the necessary decryption of the content on the MRTDs.
+ options) in order to do the necessary decryption of the content of the MRTDs.
  The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
  which is printed on the MRTD.
  .
@@ -33,11 +33,11 @@ Architecture: any
 Depends: libmrtd0 (= ${binary:Version}), ${misc:Depends}
 Description: Development files for libmrtd0
  Machine-readable travel documents such as passports nowadays usually contain
- an RFID chip for storing various data. This library provides of useful
+ an RFID chip for storing various data. This library provides useful
  functions for reading out the data from these documents. This version of the
  library supports the Basic Access Control (BAC). It uses several cryptographic
  functions from either libgcrypt or libtomcrypt (depending on compile-time
- options) in order to do the necessary decryption of the content on the MRTDs.
+ options) in order to do the necessary decryption of the content of the MRTDs.
  The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
  which is printed on the MRTD.
  .
@@ -54,11 +54,11 @@ Priority: extra
 Depends: libmrtd0 (= ${binary:Version}), ${misc:Depends}
 Description: debug symbols for libmrtd0
  Machine-readable travel documents such as passports nowadays usually contain
- an RFID chip for storing various data. This library provides of useful
+ an RFID chip for storing various data. This library provides useful
  functions for reading out the data from these documents. This version of the
  library supports the Basic Access Control (BAC). It uses several cryptographic
  functions from either libgcrypt or libtomcrypt (depending on compile-time
- options) in order to do the necessary decryption of the content on the MRTDs.
+ options) in order to do the necessary decryption of the content of the MRTDs.
  The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
  which is printed on the MRTD.
  .
