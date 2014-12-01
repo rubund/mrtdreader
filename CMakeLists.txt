@@ -4,7 +4,19 @@ SET(CMAKE_BUILD_TYPE Release CACHE STRING "If build type is not specified on com
 
 project (mrtdreader)
 
+find_package(PkgConfig)
 INCLUDE(CheckIncludeFiles)
+
+pkg_check_modules(NFC libnfc)
+CHECK_INCLUDE_FILES(gcrypt.h HAVE_GCRYPT)
+
+if(NOT NFC_FOUND)
+    MESSAGE(FATAL_ERROR "The development files for libnfc are needed")
+endif()
+
+if(NOT HAVE_GCRYPT)
+    MESSAGE(FATAL_ERROR "The development files for libgcrypt are needed")
+endif()
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
