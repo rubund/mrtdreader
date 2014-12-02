@@ -39,8 +39,16 @@ static char *dob = NULL;
 static char *eov = NULL;
 static char *extra_argument = NULL;
 
-void closedown(int sig)
+static char done = 0;
+
+static void closedown(int sig)
 {
+	done = 1;
+	printf("Stopping...\n");
+}
+static void forcestop(int sig)
+{
+	done = 1;
 	printf("Stopping...\n");
 	if(pnd != NULL)
 		nfc_close(pnd);
@@ -132,8 +140,8 @@ int main(int argc, char **argv)
 	}
 
 
+	signal(SIGINT, forcestop);
 	srand(time(NULL));
-	signal(SIGINT, closedown);
 
 	nfc_init(&context);
 	nfc_target ant;
@@ -159,14 +167,24 @@ int main(int argc, char **argv)
 		nfc_perror(pnd,"nfc_initiator_init");
 		goto failed;
 	}
+
 	printf("NFC device: %s opened\n",nfc_device_get_name(pnd));
+
+	if (nfc_device_set_property_bool(pnd, NP_INFINITE_SELECT, false) < 0){
+		fprintf(stderr, "error setting property\n");
+		goto failed;
+	}
 
 	nfc_modulation nm;
 	nm.nmt = NMT_ISO14443B;
 	nm.nbr = NBR_106;
 
-	while(nfc_initiator_select_passive_target(pnd,nm,NULL,0,&ant) <= 0);
+	signal(SIGINT, closedown);
+	while(nfc_initiator_select_passive_target(pnd,nm,NULL,0,&ant) <= 0 && done != 1);
+	if(done)
+		goto failed;
 	printf("Target found!\n");
+	signal(SIGINT, forcestop);
 
 	uint8_t txbuffer[300];
 	int txlen;
