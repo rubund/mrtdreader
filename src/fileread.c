@@ -176,4 +176,77 @@ void mrtd_fileread_write_image_to_file(uint8_t *file_content, int file_size, cha
 	fclose(out);
 }
 
+void mrtd_fileread_get_datagroup_name(uint8_t dg, char *name)
+{
+	switch(dg){
+		case(0x60): sprintf(name,"EF_COM");   break;
+		case(0x61): sprintf(name,"EF_DG1");   break;
+		case(0x75): sprintf(name,"EF_DG2");   break;
+		case(0x63): sprintf(name,"EF_DG3");   break;
+		case(0x76): sprintf(name,"EF_DG4");   break;
+		case(0x65): sprintf(name,"EF_DG5");   break;
+		case(0x66): sprintf(name,"EF_DG6");   break;
+		case(0x67): sprintf(name,"EF_DG7");   break;
+		case(0x68): sprintf(name,"EF_DG8");   break;
+		case(0x69): sprintf(name,"EF_DG9");   break;
+		case(0x6a): sprintf(name,"EF_DG10");  break;
+		case(0x6b): sprintf(name,"EF_DG11");  break;
+		case(0x6c): sprintf(name,"EF_DG12");  break;
+		case(0x6d): sprintf(name,"EF_DG13");  break;
+		case(0x6e): sprintf(name,"EF_DG14");  break;
+		case(0x6f): sprintf(name,"EF_DG15");  break;
+		case(0x70): sprintf(name,"EF_DG16");  break;
+		case(0x77): sprintf(name,"EF_SOD");   break;
+		default: sprintf(name,"not defined"); break;
+	}
+	return;
+}
+
+void mrtd_fileread_decode_ef_com(uint8_t *file_content, int file_size, uint8_t *datagroups, int *numdatagroups)
+{
+	int i;
+	int currentlength;
+	int interncounter;
+	int totallength;
+	char longer = 0;
+	char currentkeys = 0;
+	currentlength = 0;
+	*numdatagroups=0;
+	for(i=0;i<file_size;i++){
+		if(i==1){
+			totallength = file_content[i];
+			interncounter=0;
+		}
+		else if(longer == 1){
+			longer = 2;
+		}
+		else if(longer == 2){
+			longer = 0;
+			currentlength = file_content[i];
+			interncounter=0;
+		}
+		else if(interncounter == currentlength && file_content[i] == 0x5f){
+			currentkeys = 0;
+			longer = 1;
+		}
+		else if(interncounter == currentlength){
+			longer = 2;
+			if(file_content[i] == 0x5c)
+				currentkeys = 1;
+			else
+				currentkeys = 0;
+		}
+		else {
+			if(currentkeys) {
+				datagroups[interncounter] = file_content[i];
+				char buffer[30];
+				mrtd_fileread_get_datagroup_name(datagroups[interncounter],buffer);
+				printf("Found: %s\n",buffer);
+				(*numdatagroups)++;
+			}
+			interncounter++;
+		}
+	}
+	printf("\n");
+}
 

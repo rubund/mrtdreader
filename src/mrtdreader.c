@@ -202,6 +202,10 @@ int main(int argc, char **argv)
 	printhex("File content",filecontent,filecontentlength);
 	printf("File size: %d\n",filecontentlength);
 
+	uint8_t datagroups[20];
+	int ndatagroups;
+	mrtd_fileread_decode_ef_com(filecontent,filecontentlength,datagroups,&ndatagroups);
+
 	printf("\n");
 
 	printf("Getting EF.SOD...");
