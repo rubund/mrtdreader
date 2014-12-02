@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <time.h>
 #include <nfc/nfc.h>
 #include <signal.h>
 #include "mrtd.h"
@@ -131,6 +132,7 @@ int main(int argc, char **argv)
 	}
 
 
+	srand(time(NULL));
 	signal(SIGINT, closedown);
 
 	nfc_init(&context);
@@ -175,6 +177,7 @@ int main(int argc, char **argv)
 	uint8_t ksenc[16];
 	uint8_t ksmac[16];
 
+	mrtd_bac_randomize_rndifd_kifd();
 	ret = mrtd_bac_keyhandshake(pnd,kmrz,ksenc,ksmac,&ssc_long);
 
 	if(ret == RET_CHALLENGE_FAILED){
@@ -190,9 +193,20 @@ int main(int argc, char **argv)
 	uint8_t filecontent[17000];
 	int filecontentlength;
 
+
 	printf("Getting EF.COM...");
 	fflush(stdout);
 	mrtd_fileread_read(pnd,"\x01\x1e",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+	printf(" done\n");
+
+	printhex("File content",filecontent,filecontentlength);
+	printf("File size: %d\n",filecontentlength);
+
+	printf("\n");
+
+	printf("Getting EF.SOD...");
+	fflush(stdout);
+	mrtd_fileread_read(pnd,"\x01\x1d",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
 	printf(" done\n");
 
 	printhex("File content",filecontent,filecontentlength);

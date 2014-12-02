@@ -28,5 +28,9 @@
 
 int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long);
 
+void mrtd_bac_set_rndifd_kifd(uint8_t *rnd_ifd, uint8_t *kifd);
+
+void mrtd_bac_randomize_rndifd_kifd();
+
 #endif /* INC_BAC_H */
 
