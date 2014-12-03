@@ -22,6 +22,15 @@ Build instruction
 - sudo ldconfig
 
 
+Usage
+------------
+There is a tool called *mrtdreader* using the library which can be run like
+this:
+
+- mrtdreader <MRZ>
+
+MRZ is the bottom line on the machine-readable travel document.
+
 Content of MRTDs
 ----------------
 
