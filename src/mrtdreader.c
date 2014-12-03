@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <time.h>
 #include <nfc/nfc.h>
 #include <signal.h>
 #include "mrtd.h"
@@ -38,8 +39,16 @@ static char *dob = NULL;
 static char *eov = NULL;
 static char *extra_argument = NULL;
 
-void closedown(int sig)
+static char done = 0;
+
+static void closedown(int sig)
 {
+	done = 1;
+	printf("Stopping...\n");
+}
+static void forcestop(int sig)
+{
+	done = 1;
 	printf("Stopping...\n");
 	if(pnd != NULL)
 		nfc_close(pnd);
@@ -131,7 +140,8 @@ int main(int argc, char **argv)
 	}
 
 
-	signal(SIGINT, closedown);
+	signal(SIGINT, forcestop);
+	srand(time(NULL));
 
 	nfc_init(&context);
 	nfc_target ant;
@@ -157,14 +167,24 @@ int main(int argc, char **argv)
 		nfc_perror(pnd,"nfc_initiator_init");
 		goto failed;
 	}
+
 	printf("NFC device: %s opened\n",nfc_device_get_name(pnd));
+
+	if (nfc_device_set_property_bool(pnd, NP_INFINITE_SELECT, false) < 0){
+		fprintf(stderr, "error setting property\n");
+		goto failed;
+	}
 
 	nfc_modulation nm;
 	nm.nmt = NMT_ISO14443B;
 	nm.nbr = NBR_106;
 
-	while(nfc_initiator_select_passive_target(pnd,nm,NULL,0,&ant) <= 0);
+	signal(SIGINT, closedown);
+	while(nfc_initiator_select_passive_target(pnd,nm,NULL,0,&ant) <= 0 && done != 1);
+	if(done)
+		goto failed;
 	printf("Target found!\n");
+	signal(SIGINT, forcestop);
 
 	uint8_t txbuffer[300];
 	int txlen;
@@ -175,6 +195,7 @@ int main(int argc, char **argv)
 	uint8_t ksenc[16];
 	uint8_t ksmac[16];
 
+	mrtd_bac_randomize_rndifd_kifd();
 	ret = mrtd_bac_keyhandshake(pnd,kmrz,ksenc,ksmac,&ssc_long);
 
 	if(ret == RET_CHALLENGE_FAILED){
@@ -190,9 +211,24 @@ int main(int argc, char **argv)
 	uint8_t filecontent[17000];
 	int filecontentlength;
 
+
 	printf("Getting EF.COM...");
 	fflush(stdout);
 	mrtd_fileread_read(pnd,"\x01\x1e",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
+	printf(" done\n");
+
+	printhex("File content",filecontent,filecontentlength);
+	printf("File size: %d\n",filecontentlength);
+
+	uint8_t datagroups[20];
+	int ndatagroups;
+	mrtd_fileread_decode_ef_com(filecontent,filecontentlength,datagroups,&ndatagroups);
+
+	printf("\n");
+
+	printf("Getting EF.SOD...");
+	fflush(stdout);
+	mrtd_fileread_read(pnd,"\x01\x1d",filecontent,&filecontentlength,ksenc,ksmac,&ssc_long);
 	printf(" done\n");
 
 	printhex("File content",filecontent,filecontentlength);
