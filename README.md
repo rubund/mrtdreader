@@ -47,3 +47,5 @@ The following files may be present in the MRTD:
 * EF.SOD  - 011D - Security object data - hash values
 * EF.COM  - 011E - EF.COM
 
+The example program *mrtdreader* reads out the MRZ, the face, the EF.COM file
+and the EF.SOD file.
