@@ -154,9 +154,7 @@ void mrtd_crypto_mac(uint8_t *input, uint8_t *output, int length, uint8_t *key)
 	int i,j;
 	uint8_t current[8];
 	uint8_t mac[8];
-	uint8_t left[8];
-	uint8_t right[8];
-	uint8_t machex[8];
+	uint8_t xormac[8];
 	uint8_t tmp[8];
 	memset(mac,0,8);
 	for(i=0;i<(length/8);i++){
@@ -164,11 +162,9 @@ void mrtd_crypto_mac(uint8_t *input, uint8_t *output, int length, uint8_t *key)
 			current[j] = input[i*8+j];
 		}
 		for(j=0;j<8;j++){
-			left[j] = mac[j];
-			right[j] = current[j];
-			machex[j] = mac[j] ^ current[j];
+			xormac[j] = mac[j] ^ current[j];
 		}
-		mrtd_crypto_encrypt_des(machex,mac,8,key);
+		mrtd_crypto_encrypt_des(xormac,mac,8,key);
 	}
 	mrtd_crypto_decrypt_des(mac,tmp,8,key+8);
 	mrtd_crypto_encrypt_des(tmp,output,8,key);
