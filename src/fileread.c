@@ -30,7 +30,8 @@
 
 #define MAXREAD 100
 
-static int endianness(){
+static int endianness()
+{
 	int i = 1;
 	char *p = (char *)&i;
 	if(p[0] == 1)
