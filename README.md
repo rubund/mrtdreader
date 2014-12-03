@@ -27,7 +27,7 @@ Usage
 There is a tool called *mrtdreader* using the library which can be run like
 this:
 
-- mrtdreader <MRZ>
+- mrtdreader &lt;MRZ&gt;
 
 MRZ is the bottom line on the machine-readable travel document.
 
