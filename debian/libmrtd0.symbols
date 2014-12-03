@@ -11,6 +11,8 @@ libmrtd.so.0 libmrtd0 #MINVER#
  mrtd_bac_keyhandshake@Base 0.1.0
  mrtd_bac_kmrz_to_kenc_kmac@Base 0.1.0
  mrtd_bac_protected_apdu@Base 0.1.0
+ mrtd_bac_randomize_rndifd_kifd@Base 0.1.1
+ mrtd_bac_set_rndifd_kifd@Base 0.1.1
  mrtd_crypto_crypt_3des@Base 0.1.0
  mrtd_crypto_crypt_des@Base 0.1.0
  mrtd_crypto_decrypt_3des@Base 0.1.0
@@ -23,5 +25,7 @@ libmrtd.so.0 libmrtd0 #MINVER#
  mrtd_crypto_padding@Base 0.1.0
  mrtd_crypto_padding_remove@Base 0.1.0
  mrtd_crypto_sha1@Base 0.1.0
+ mrtd_fileread_decode_ef_com@Base 0.1.1
+ mrtd_fileread_get_datagroup_name@Base 0.1.1
  mrtd_fileread_read@Base 0.1.0
  mrtd_fileread_write_image_to_file@Base 0.1.0
