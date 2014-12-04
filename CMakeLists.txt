@@ -18,8 +18,6 @@ if(NOT HAVE_GCRYPT)
     MESSAGE(FATAL_ERROR "The development files for libgcrypt are needed")
 endif()
 
-set(MRTD_VERSION 0.1.2)
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)

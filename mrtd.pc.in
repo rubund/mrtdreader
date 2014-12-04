@@ -5,7 +5,7 @@ includedir=${CMAKE_INSTALL_PREFIX}/include
 
 Name: mrtd
 Description: MRTD - machine-readable travel document reader
-Version: ${MRTD_VERSION}
+Version: 0.1.0
 Requires:
 Libs: -lmrtd -lnfc
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include/mrtd
