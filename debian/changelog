@@ -1,5 +1,5 @@
-mrtdreader (0.1.1-1) unstable; urgency=low
+mrtdreader (0.1.2-1) unstable; urgency=low
 
   * Initial release (Closes: #771708)
 
- -- Ruben Undheim <ruben.undheim@gmail.com>  Wed, 03 Dec 2014 20:09:58 +0100
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Thu, 04 Dec 2014 19:50:44 +0100
