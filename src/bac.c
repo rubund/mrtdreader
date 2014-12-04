@@ -78,7 +78,7 @@ int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_
 	memcpy(txbuffer+5,cmd_data,40);
 	txbuffer[45] = 0x28;
 	rxlen = sizeof(rxbuffer);
-	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
+	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,100000)) < 0){
 		fprintf(stderr,"Unable to send");
 		goto failed;
 	}
