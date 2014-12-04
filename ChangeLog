@@ -1,3 +1,8 @@
+0.1.2
+    Now also working with german passport - found two mistakes:
+        - Not polling for NFC-A
+        - Not long enough timeout
+    Installing .pc file for multi-arch
 0.1.1:
     rnd_ifd and kifd can be set or randomized
     mrtdreader also reading EF.SOD

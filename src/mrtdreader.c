@@ -175,12 +175,19 @@ int main(int argc, char **argv)
 		goto failed;
 	}
 
-	nfc_modulation nm;
-	nm.nmt = NMT_ISO14443B;
-	nm.nbr = NBR_106;
+	nfc_modulation nmA,nmB;
+	nmA.nmt = NMT_ISO14443A;
+	nmA.nbr = NBR_106;
+	nmB.nmt = NMT_ISO14443B;
+	nmB.nbr = NBR_106;
 
 	signal(SIGINT, closedown);
-	while(nfc_initiator_select_passive_target(pnd,nm,NULL,0,&ant) <= 0 && done != 1);
+	while(1){
+		ret = nfc_initiator_select_passive_target(pnd,nmA,NULL,0,&ant);
+		if(ret > 0 || done) break;
+		ret = nfc_initiator_select_passive_target(pnd,nmB,NULL,0,&ant);
+		if(ret > 0 || done) break;
+	}
 	if(done)
 		goto failed;
 	printf("Target found!\n");
