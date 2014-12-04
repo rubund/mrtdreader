@@ -38,6 +38,16 @@ int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_
 	uint8_t rxbuffer[300];
 	int rxlen;
 
+	txlen = 12;
+	memcpy(txbuffer, "\x00\xa4\x04\x0c\x07\xa0\x00\x00\x02\x47\x10\x01", txlen);
+	rxlen = sizeof(rxbuffer);
+	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
+		fprintf(stderr,"Unable to send");
+		goto failed;
+	}
+	else{
+		rxlen = res;
+	}
 
 	txlen = 5;
 	memcpy(txbuffer, "\x00\x84\x00\x00\x08", txlen);
@@ -53,16 +63,6 @@ int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_
 	uint8_t remotechallenge[8];
 	memcpy(remotechallenge,rxbuffer,8);
 
-	txlen = 12;
-	memcpy(txbuffer, "\x00\xa4\x04\x0c\x07\xa0\x00\x00\x02\x47\x10\x01", txlen);
-	rxlen = sizeof(rxbuffer);
-	if((res = nfc_initiator_transceive_bytes(pnd,txbuffer,txlen,rxbuffer,rxlen,500)) < 0){
-		fprintf(stderr,"Unable to send");
-		goto failed;
-	}
-	else{
-		rxlen = res;
-	}
 
 	uint8_t kenc[16];
 	uint8_t kmac[16];
