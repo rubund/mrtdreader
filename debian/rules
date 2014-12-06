@@ -6,9 +6,20 @@ export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
+PKD  = $(abspath $(dir $(MAKEFILE_LIST)))
+PKG  = $(word 2,$(shell dpkg-parsechangelog -l$(PKD)/changelog | grep ^Source))
+VER ?= $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
+
+
 %:
 	dh $@
 
 override_dh_strip:
 	dh_strip -plibmrtd0 --keep-debug --dbg-package=libmrtd0-dbg
 	dh_strip -pmrtdreader
+
+
+get-orig-source: $(info I: $(PKG)_$(VER))
+	@echo "# Downloading..."
+	uscan --noconf --verbose --rename --destdir=$(CURDIR) --force-download --download-version $(VER) $(PKD)
+
