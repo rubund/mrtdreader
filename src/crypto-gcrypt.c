@@ -27,12 +27,12 @@
 #include <gcrypt.h>
 
 
-void mrtd_crypto_sha1(uint8_t *input, int length, uint8_t *output)
+void mrtd_crypto_sha1(const uint8_t *input, const int length, uint8_t *output)
 {
 	gcry_md_hash_buffer(GCRY_MD_SHA1, output, input, length);
 }
 
-void mrtd_crypto_crypt_des(uint8_t *input, uint8_t *output, int length, uint8_t *key, char encrypt)
+void mrtd_crypto_crypt_des(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key, const char encrypt)
 {
 	int err;
 	uint8_t iv[8];
@@ -49,17 +49,17 @@ void mrtd_crypto_crypt_des(uint8_t *input, uint8_t *output, int length, uint8_t 
 
 }
 
-void mrtd_crypto_encrypt_des(uint8_t *input, uint8_t *output, int length, uint8_t *key)
+void mrtd_crypto_encrypt_des(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key)
 {
 	mrtd_crypto_crypt_des(input,output,length,key,1);
 }
 
-void mrtd_crypto_decrypt_des(uint8_t *input, uint8_t *output, int length, uint8_t *key)
+void mrtd_crypto_decrypt_des(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key)
 {
 	mrtd_crypto_crypt_des(input,output,length,key,0);
 }
 
-void mrtd_crypto_crypt_3des(uint8_t *input, uint8_t *output, int length, uint8_t *key, char encrypt)
+void mrtd_crypto_crypt_3des(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key, const char encrypt)
 {
 	int err;
 	uint8_t longkey[24];
@@ -78,17 +78,17 @@ void mrtd_crypto_crypt_3des(uint8_t *input, uint8_t *output, int length, uint8_t
 	gcry_cipher_close(handle);
 }
 
-void mrtd_crypto_encrypt_3des(uint8_t *input, uint8_t *output, int length, uint8_t *key)
+void mrtd_crypto_encrypt_3des(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key)
 {
 	mrtd_crypto_crypt_3des(input,output,length,key,1);
 }
 
-void mrtd_crypto_decrypt_3des(uint8_t *input, uint8_t *output, int length, uint8_t *key)
+void mrtd_crypto_decrypt_3des(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key)
 {
 	mrtd_crypto_crypt_3des(input,output,length,key,0);
 }
 
-void mrtd_crypto_fix_parity(uint8_t *input, uint8_t *output, int length, int *newlength)
+void mrtd_crypto_fix_parity(const uint8_t *input, uint8_t *output, const int length, int *newlength)
 {
 	int i,j;
 	unsigned char y;
@@ -109,14 +109,14 @@ void mrtd_crypto_fix_parity(uint8_t *input, uint8_t *output, int length, int *ne
 	}
 
 }
-void mrtd_crypto_padding(uint8_t *input, uint8_t *output, int length, int *newlength)
+void mrtd_crypto_padding(const uint8_t *input, uint8_t *output, const int length, int *newlength)
 {
 	*newlength = ((length+8)/8)*8;
 	memset(output,0,*newlength);
 	memcpy(output,input,length);
 	output[length] = 0x80;
 }
-void mrtd_crypto_padding_remove(uint8_t *input, uint8_t *output, int length, int *newlength)
+void mrtd_crypto_padding_remove(const uint8_t *input, uint8_t *output, const int length, int *newlength)
 {
 	int i;
 	int pos;
@@ -149,7 +149,7 @@ void mrtd_crypto_padding_remove(uint8_t *input, uint8_t *output, int length, int
 		return;
 }
 
-void mrtd_crypto_mac(uint8_t *input, uint8_t *output, int length, uint8_t *key)
+void mrtd_crypto_mac(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key)
 {
 	int i,j;
 	uint8_t current[8];
@@ -170,7 +170,7 @@ void mrtd_crypto_mac(uint8_t *input, uint8_t *output, int length, uint8_t *key)
 	mrtd_crypto_encrypt_des(tmp,output,8,key);
 }
 
-void mrtd_crypto_mac_padding(uint8_t *input, uint8_t *output, int length, uint8_t *key)
+void mrtd_crypto_mac_padding(const uint8_t *input, uint8_t *output, const int length, const uint8_t *key)
 {
 	int newlength;
 	uint8_t *tmp;

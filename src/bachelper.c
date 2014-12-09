@@ -38,7 +38,7 @@ static int endianness()
 		return 1;
 }
 
-void mrtd_bac_kenc_kmac(uint8_t *input, uint8_t *kenc, uint8_t *kmac)
+void mrtd_bac_kenc_kmac(const uint8_t *input, uint8_t *kenc, uint8_t *kmac)
 {
 	uint8_t hash[20];
 	uint8_t k[20];
@@ -57,14 +57,14 @@ void mrtd_bac_kenc_kmac(uint8_t *input, uint8_t *kenc, uint8_t *kmac)
 	memcpy(kmac,kmac_tmp,16);
 }
 
-void mrtd_bac_kmrz_to_kenc_kmac(uint8_t *kmrz, uint8_t *kenc, uint8_t *kmac)
+void mrtd_bac_kmrz_to_kenc_kmac(const uint8_t *kmrz, uint8_t *kenc, uint8_t *kmac)
 {
 	uint8_t hash[20];
 	mrtd_crypto_sha1(kmrz,24,hash);
 	mrtd_bac_kenc_kmac(hash,kenc,kmac);
 }
 
-void mrtd_bac_eifd_mifd(uint8_t *rnd_ifd, uint8_t *kifd, uint8_t *remote_challenge, uint8_t *kenc, uint8_t *kmac, uint8_t *eifd, uint8_t *mifd)
+void mrtd_bac_eifd_mifd(const uint8_t *rnd_ifd, const uint8_t *kifd, const uint8_t *remote_challenge, const uint8_t *kenc, const uint8_t *kmac, uint8_t *eifd, uint8_t *mifd)
 {
 	uint8_t S[32];
 	memcpy(S,rnd_ifd,8);
@@ -75,18 +75,18 @@ void mrtd_bac_eifd_mifd(uint8_t *rnd_ifd, uint8_t *kifd, uint8_t *remote_challen
 	mrtd_crypto_mac_padding(eifd,mifd,32,kmac);
 }
 
-void mrtd_bac_cmd_data(uint8_t *rnd_ifd, uint8_t *kifd, uint8_t *remote_challenge, uint8_t *kenc, uint8_t *kmac, uint8_t *cmd_data)
+void mrtd_bac_cmd_data(const uint8_t *rnd_ifd, const uint8_t *kifd, const uint8_t *remote_challenge, const uint8_t *kenc, const uint8_t *kmac, uint8_t *cmd_data)
 {
 	mrtd_bac_eifd_mifd(rnd_ifd,kifd,remote_challenge,kenc,kmac,cmd_data,cmd_data+32);
 }
 
 
-char mrtd_bac_challenge_ok(uint8_t *rx_data, uint8_t *kenc, uint8_t *rnd_ifd, uint8_t *rnd_icc, uint8_t *kicc)
+char mrtd_bac_challenge_ok(const uint8_t *rx_data, const uint8_t *kenc, const uint8_t *rnd_ifd, uint8_t *rnd_icc, uint8_t *kicc)
 {
 	int i;
 	uint8_t decryptedresp[32];
-	uint8_t *resp;
-	uint8_t *mac_received;
+	const uint8_t *resp;
+	const uint8_t *mac_received;
 	uint8_t *rec_ifd;
 
 	resp = rx_data;
@@ -107,7 +107,7 @@ char mrtd_bac_challenge_ok(uint8_t *rx_data, uint8_t *kenc, uint8_t *rnd_ifd, ui
 	return 1;
 }
 
-uint64_t mrtd_bac_get_ssc(uint8_t *remote_challenge, uint8_t *rnd_ifd)
+uint64_t mrtd_bac_get_ssc(const uint8_t *remote_challenge, const uint8_t *rnd_ifd)
 {
 	char ssc[8];
 	uint64_t ssc_long;
@@ -140,7 +140,7 @@ uint64_t mrtd_bac_get_ssc(uint8_t *remote_challenge, uint8_t *rnd_ifd)
 }
 
 
-void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t ssc_long)
+void mrtd_bac_protected_apdu(const uint8_t *input, uint8_t *output, const int length, int *outputlength, const uint8_t *ksenc, const uint8_t *ksmac, const uint64_t ssc_long)
 {
 	int datalength;
 	char has_le;
@@ -261,11 +261,11 @@ void mrtd_bac_protected_apdu(uint8_t *input, uint8_t *output, int length, int *o
 	return ;
 }
 
-void mrtd_bac_decrypt_response(uint8_t *input, uint8_t *output, int length, int *outputlength, uint8_t *ksenc)
+void mrtd_bac_decrypt_response(const uint8_t *input, uint8_t *output, const int length, int *outputlength, uint8_t *ksenc)
 {
 	uint8_t *tmp;
 	int tmplength;
-	char *tobedecrypted = input+3;
+	const uint8_t *tobedecrypted = input+3;
 	tmplength = length-16-3;
 	if(tmplength > 0){
 		tmp = malloc(tmplength);
@@ -290,7 +290,7 @@ static int mrtd_get_mrz_weight(int i)
 	}
 }
 
-int mrtd_bac_check_digit(uint8_t *input, int length)
+int mrtd_bac_check_digit(const uint8_t *input, const int length)
 {
 	int i;
 	int tmp;
@@ -309,7 +309,7 @@ int mrtd_bac_check_digit(uint8_t *input, int length)
 	return (check_digit % 10);
 }
 
-void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output)
+void mrtd_bac_get_kmrz(const uint8_t *pn, const uint8_t *dob, const uint8_t *eov, uint8_t *output)
 {
 	uint8_t tmp[20];
 	int cd;
@@ -338,7 +338,7 @@ void mrtd_bac_get_kmrz(uint8_t *pn, uint8_t *dob, uint8_t *eov, uint8_t *output)
 	
 }
 
-void mrtd_bac_get_kmrz_from_mrz(uint8_t *mrz, uint8_t *kmrz)
+void mrtd_bac_get_kmrz_from_mrz(const uint8_t *mrz, uint8_t *kmrz)
 {
 	uint8_t pn[9];
 	uint8_t dob[6];

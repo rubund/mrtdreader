@@ -29,7 +29,7 @@
 static uint8_t rnd_ifd_int[8] = {0x78,0x17,0x23,0x86,0x0c,0x06,0xc2,0x26};
 static uint8_t kifd_int[16] = {0x0b,0x79,0x52,0x40,0xcb,0x70,0x49,0xb0,0x1c,0x19,0xb3,0x3e,0x32,0x80,0x4f,0x0b};
 
-int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
+int mrtd_bac_keyhandshake(nfc_device *pnd, const uint8_t *kmrz, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
 {
 	int i;
 	int res;
@@ -118,7 +118,7 @@ int mrtd_bac_keyhandshake(nfc_device *pnd, uint8_t *kmrz, uint8_t *ksenc, uint8_
 		return RET_CHALLENGE_FAILED;
 }
 
-void mrtd_bac_set_rndifd_kifd(uint8_t *rnd_ifd, uint8_t *kifd)
+void mrtd_bac_set_rndifd_kifd(const uint8_t *rnd_ifd, const uint8_t *kifd)
 {
 	int i;
 	int r = rand();
