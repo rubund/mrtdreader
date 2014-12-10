@@ -40,7 +40,7 @@ static int endianness()
 		return 1;
 }
 
-int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, int *outputlength, uint8_t *ksenc, uint8_t *ksmac, uint64_t *ssc_long)
+int mrtd_fileread_read(nfc_device *pnd, const uint8_t *file_index, uint8_t *output, int *outputlength, const uint8_t *ksenc, const uint8_t *ksmac, uint64_t *ssc_long)
 {
 	int res;
 	uint8_t txbuffer[300];
@@ -167,7 +167,7 @@ int mrtd_fileread_read(nfc_device *pnd, uint8_t *file_index, uint8_t *output, in
 		return -1;
 }
 
-void mrtd_fileread_write_image_to_file(uint8_t *file_content, int file_size, char *filename)
+void mrtd_fileread_write_image_to_file(const uint8_t *file_content, const int file_size, const char *filename)
 {
 	FILE *out;
 	out = fopen(filename,"w");
@@ -177,7 +177,7 @@ void mrtd_fileread_write_image_to_file(uint8_t *file_content, int file_size, cha
 	fclose(out);
 }
 
-void mrtd_fileread_get_datagroup_name(uint8_t dg, char *name)
+void mrtd_fileread_get_datagroup_name(const uint8_t dg, char *name)
 {
 	switch(dg){
 		case(0x60): sprintf(name,"EF_COM");   break;
@@ -203,7 +203,7 @@ void mrtd_fileread_get_datagroup_name(uint8_t dg, char *name)
 	return;
 }
 
-void mrtd_fileread_decode_ef_com(uint8_t *file_content, int file_size, uint8_t *datagroups, int *numdatagroups)
+void mrtd_fileread_decode_ef_com(const uint8_t *file_content, const int file_size, uint8_t *datagroups, int *numdatagroups)
 {
 	int i;
 	int currentlength;
