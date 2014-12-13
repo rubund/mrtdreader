@@ -1,3 +1,5 @@
+0.1.4
+    Fixed memory allocation problem in mrtdreader
 0.1.3
     Input arguments now set to const
 0.1.2
