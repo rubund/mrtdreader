@@ -18,7 +18,7 @@ if(NOT HAVE_GCRYPT)
     MESSAGE(FATAL_ERROR "The development files for libgcrypt are needed")
 endif()
 
-set(MRTD_VERSION 0.1.3)
+set(MRTD_VERSION 0.1.4)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
