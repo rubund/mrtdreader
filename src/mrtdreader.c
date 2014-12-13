@@ -138,6 +138,12 @@ int main(int argc, char **argv)
 		mrtd_bac_get_kmrz(pn, dob, eov, buffer);
 		kmrz = buffer;
 	}
+	if(pn != NULL)
+		free(pn);
+	if(dob != NULL)
+		free(dob);
+	if(eov != NULL)
+		free(eov);
 
 
 	signal(SIGINT, forcestop);
@@ -215,7 +221,8 @@ int main(int argc, char **argv)
 	printf("======================\nChallenge successful!\n======================\n");
 
 	printf("\n");
-	uint8_t filecontent[17000];
+	uint8_t *filecontent = NULL;
+	filecontent = malloc(50000);
 	int filecontentlength;
 
 
@@ -264,6 +271,8 @@ int main(int argc, char **argv)
 
 	nfc_close(pnd);
 	nfc_exit(context);
+	if(filecontent != NULL)
+		free(filecontent);
 	return 0;
 
 	failed:
@@ -277,6 +286,8 @@ int main(int argc, char **argv)
 			free(dob);
 		if(eov != NULL)
 			free(eov);
+		if(filecontent != NULL)
+			free(filecontent);
 		return -1;
 }
 
