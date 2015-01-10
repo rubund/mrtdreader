@@ -80,7 +80,7 @@ Architecture: any
 Depends: libmrtd0 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
-Suggests: graphicsmagick-imagemagick-compat
+Suggests: graphicsmagick
 Description: Reader for machine-readable travel documents (MRTDs / passports)
  This program takes as input the content of the machine-readable zone of
  machine-readable travel documents and then reads out some data and dumps the
