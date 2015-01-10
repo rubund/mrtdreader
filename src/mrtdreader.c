@@ -272,7 +272,7 @@ int main(int argc, char **argv)
 	printf(" done\n");
 
 
-	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image.jpg");
+	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image");
 
 	nfc_close(pnd);
 	nfc_exit(context);

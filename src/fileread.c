@@ -178,7 +178,7 @@ void mrtd_fileread_write_image_to_file(const uint8_t *file_content, const int fi
 		if(strlen(filename) > 3 && filename[strlen(filename)-4] == '.')
 			baselength = strlen(filename)-4;
 		else
-			baselength = strlen(filename)-1;
+			baselength = strlen(filename);
 		memcpy(filenamebuf, filename, baselength);
 		if(filetype == 0x00)
 			memcpy(filenamebuf+baselength,".jpg",4);
