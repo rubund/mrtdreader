@@ -170,11 +170,31 @@ int mrtd_fileread_read(nfc_device *pnd, const uint8_t *file_index, uint8_t *outp
 void mrtd_fileread_write_image_to_file(const uint8_t *file_content, const int file_size, const char *filename)
 {
 	FILE *out;
-	out = fopen(filename,"w");
-	int offset = 84;
-	fwrite(file_content+offset,1,file_size-offset,out);
+	char filetype;
+	char filenamebuf[256];
+	int baselength=0;
+	if(file_size > 84){
+		filetype = file_content[73];  // 0x00: JPG, 0x01: JPEG2000
+		if(strlen(filename) > 3 && filename[strlen(filename)-4] == '.')
+			baselength = strlen(filename)-4;
+		else
+			baselength = strlen(filename);
+		memcpy(filenamebuf, filename, baselength);
+		if(filetype == 0x00)
+			memcpy(filenamebuf+baselength,".jpg",4);
+		else
+			memcpy(filenamebuf+baselength,".jp2",4);
+		filenamebuf[baselength+4] = 0;
+		out = fopen(filenamebuf,"w");
+		printf("Saving image to %s...",filenamebuf);
+		int offset = 84;
+		fwrite(file_content+offset,1,file_size-offset,out);
+		fclose(out);
+		printf(" done\n");
+		if(filetype == 0x01)
+			printf("\n(Note: .jp2 files are JPEG2000 images which can be opened\n with many different image viewers. If you are unable to\n open it, it can be converted to JPEG with GraphicsMagick:\n   gm convert image.jp2 image.jpg )\n\n");
+	}
 
-	fclose(out);
 }
 
 void mrtd_fileread_get_datagroup_name(const uint8_t dg, char *name)

@@ -138,12 +138,18 @@ int main(int argc, char **argv)
 		mrtd_bac_get_kmrz(pn, dob, eov, buffer);
 		kmrz = buffer;
 	}
-	if(pn != NULL)
+	if(pn != NULL) {
 		free(pn);
-	if(dob != NULL)
+		pn = NULL;
+	}
+	if(dob != NULL){
 		free(dob);
-	if(eov != NULL)
+		dob = NULL;
+	}
+	if(eov != NULL){
 		free(eov);
+		eov = NULL;
+	}
 
 
 	signal(SIGINT, forcestop);
@@ -266,8 +272,7 @@ int main(int argc, char **argv)
 	printf(" done\n");
 
 
-	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image.jpg");
-	printf("Image saved to image.jpg\n");
+	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image");
 
 	nfc_close(pnd);
 	nfc_exit(context);
