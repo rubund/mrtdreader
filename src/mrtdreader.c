@@ -273,7 +273,6 @@ int main(int argc, char **argv)
 
 
 	mrtd_fileread_write_image_to_file(filecontent, filecontentlength, "image.jpg");
-	printf("Image saved to image.jpg\n");
 
 	nfc_close(pnd);
 	nfc_exit(context);
