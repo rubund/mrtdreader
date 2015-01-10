@@ -1,3 +1,6 @@
+0.1.5
+    Saving JPEG2000 images to .jp2 files
+    Fixed ugly regression
 0.1.4
     Fixed memory allocation problem in mrtdreader
 0.1.3
