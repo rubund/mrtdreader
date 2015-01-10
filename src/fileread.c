@@ -192,7 +192,7 @@ void mrtd_fileread_write_image_to_file(const uint8_t *file_content, const int fi
 		fclose(out);
 		printf(" done\n");
 		if(filetype == 0x01)
-			printf("\n(Note: .jp2 files are JPEG2000 images which can be opened\n with many different image viewers. If you are unable to\n open it, it can be converted to JPEG with ImageMagick.)\n\n");
+			printf("\n(Note: .jp2 files are JPEG2000 images which can be opened\n with many different image viewers. If you are unable to\n open it, it can be converted to JPEG with GraphicsMagick:\n   gm convert image.jp2 image.jpg )\n\n");
 	}
 
 }
