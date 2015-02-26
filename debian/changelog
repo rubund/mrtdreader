@@ -1,4 +1,11 @@
-mrtdreader (0.1.5-1) unstable; urgency=medium
+mrtdreader (0.1.5-2) unstable; urgency=medium
+
+  * Uploaded to unstable
+  * debian/mrtdreader.1: Fixed typo in man page
+
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Thu, 26 Feb 2015 21:41:03 +0100
+
+mrtdreader (0.1.5-1) experimental; urgency=medium
 
   * New upstream release
     - patches/01_fix_regression.patch fixed upstream: removed
