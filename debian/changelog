@@ -2,8 +2,8 @@ mrtdreader (0.1.5-1) unstable; urgency=medium
 
   * New upstream release
     - patches/01_fix_regression.patch fixed upstream: removed
-  * Added "Suggests: graphicsmagick"
-  * Added year 2015 to d/copyright
+  * debian/control: Added "Suggests: graphicsmagick"
+  * debian/copyright: Added year 2015
 
  -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 10 Jan 2015 13:12:21 +0100
 
