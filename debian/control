@@ -18,6 +18,7 @@ Section: libs
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
 Description: MRTD - Machine-readable travel document library
  Machine-readable travel documents such as passports nowadays usually contain
  an RFID chip for storing various data. This library provides useful functions
@@ -38,6 +39,7 @@ Depends: libmrtd0 (= ${binary:Version}),
          libgcrypt20-dev,
          libnfc-dev,
          ${misc:Depends}
+Multi-Arch: same
 Description: Development files for libmrtd0
  Machine-readable travel documents such as passports nowadays usually contain
  an RFID chip for storing various data. This library provides useful functions
@@ -60,6 +62,7 @@ Section: debug
 Priority: extra
 Depends: libmrtd0 (= ${binary:Version}),
          ${misc:Depends}
+Multi-Arch: same
 Description: debug symbols for libmrtd0
  Machine-readable travel documents such as passports nowadays usually contain
  an RFID chip for storing various data. This library provides useful functions
