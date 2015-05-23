@@ -1,9 +1,9 @@
-mrtdreader (0.1.5-2) unstable; urgency=medium
+mrtdreader (0.1.5-2) unstable; urgency=low
 
   * Uploaded to unstable
   * debian/mrtdreader.1: Fixed typo in man page
 
- -- Ruben Undheim <ruben.undheim@gmail.com>  Thu, 26 Feb 2015 21:41:03 +0100
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 23 May 2015 11:08:15 +0200
 
 mrtdreader (0.1.5-1) experimental; urgency=medium
 
