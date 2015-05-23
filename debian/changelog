@@ -2,6 +2,8 @@ mrtdreader (0.1.5-2) unstable; urgency=low
 
   * Uploaded to unstable
   * debian/mrtdreader.1: Fixed typo in man page
+  * debian/control: Added "Multi-Arch: same" to allow libmrtd to be
+    installed for multiple architectures
 
  -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 23 May 2015 11:08:15 +0200
 
