@@ -3,7 +3,7 @@ mrtdreader (0.1.5-3) unstable; urgency=low
   * debian/control: Added "Multi-Arch: same" to allow libmrtd to be
     installed for multiple architectures
 
- -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 23 May 2015 11:23:20 +0200
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 23 May 2015 22:14:25 +0200
 
 mrtdreader (0.1.5-2) unstable; urgency=low
 
