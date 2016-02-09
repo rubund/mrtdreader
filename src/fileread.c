@@ -173,6 +173,10 @@ void mrtd_fileread_write_image_to_file(const uint8_t *file_content, const int fi
 	char filetype;
 	char filenamebuf[256];
 	int baselength=0;
+	unsigned char start_sequence_jpeg[10] = {0xff,0xd8,0xff,0xe0,0x00,0x10,0x4a,0x46,0x49,0x46};
+	unsigned char start_sequence_jpeg2000[10] = {0x00,0x00,0x00,0x0c,0x6a,0x50,0x20,0x20,0x0d,0x0a};
+	unsigned char *start_sequence;
+	int comparelen = 0;
 	if(file_size > 84){
 		filetype = file_content[73];  // 0x00: JPG, 0x01: JPEG2000
 		if(strlen(filename) > 3 && filename[strlen(filename)-4] == '.')
@@ -180,14 +184,44 @@ void mrtd_fileread_write_image_to_file(const uint8_t *file_content, const int fi
 		else
 			baselength = strlen(filename);
 		memcpy(filenamebuf, filename, baselength);
-		if(filetype == 0x00)
+		if(filetype == 0x00) {
 			memcpy(filenamebuf+baselength,".jpg",4);
-		else
+			start_sequence = start_sequence_jpeg;
+			comparelen = 2;
+		}
+		else {
 			memcpy(filenamebuf+baselength,".jp2",4);
+			start_sequence = start_sequence_jpeg2000;
+			comparelen = 10;
+		}
 		filenamebuf[baselength+4] = 0;
+
+		int i,j;
+		int offset = 0;
+		char equal = 0;
+		for(i=0;i<120;i++) {
+			j = 0;
+			if(file_content[i] == start_sequence[j]){
+				equal = 1;
+				for(j=1;j<comparelen;j++) {
+					if(file_content[i+j] != start_sequence[j]){
+						equal = 0;
+						break;
+					}
+				}
+			}
+			if(equal) {
+				offset = i;
+				break;
+			}
+		}
+		if(!equal){
+			printf("Couldn't find start of image\n");
+			return;
+		}
+
 		out = fopen(filenamebuf,"w");
 		printf("Saving image to %s...",filenamebuf);
-		int offset = 84;
 		fwrite(file_content+offset,1,file_size-offset,out);
 		fclose(out);
 		printf(" done\n");
