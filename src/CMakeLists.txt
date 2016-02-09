@@ -6,7 +6,7 @@ target_link_libraries(mrtd gcrypt)
 add_executable(mrtdreader mrtdreader.c)
 target_link_libraries(mrtdreader mrtd)
 
-set_target_properties(mrtd PROPERTIES VERSION 0.0.0 SOVERSION 0)
+set_target_properties(mrtd PROPERTIES VERSION 0.0.1 SOVERSION 0)
 
 install(TARGETS mrtdreader DESTINATION bin)
 if(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr")

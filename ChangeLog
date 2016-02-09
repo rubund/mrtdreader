@@ -1,3 +1,6 @@
+0.1.6
+    Search for start of jpg and jpeg2000 images. This makes it
+    work with some english and american passports
 0.1.5
     Saving JPEG2000 images to .jp2 files
     Fixed ugly regression
