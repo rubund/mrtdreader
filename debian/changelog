@@ -1,3 +1,10 @@
+mrtdreader (0.1.6-1) unstable; urgency=medium
+
+  * New upstream release
+    - Fixes some issues with UK and US passports at least
+
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Tue, 09 Feb 2016 20:12:49 +0100
+
 mrtdreader (0.1.5-3) unstable; urgency=low
 
   * debian/control: Added "Multi-Arch: same" to allow libmrtd to be
