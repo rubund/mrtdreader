@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 9),
                libgcrypt20-dev
 Standards-Version: 3.9.6
 Vcs-Browser: https://github.com/rubund/mrtdreader/tree/debian
-Vcs-Git: git://github.com/rubund/mrtdreader.git -b debian
+Vcs-Git: https://github.com/rubund/mrtdreader.git -b debian
 Homepage: https://github.com/rubund/mrtdreader
 
 Package: libmrtd0
@@ -55,28 +55,6 @@ Description: Development files for libmrtd0
  .
  This package contains header files for building programs linked with
  libmrtd0.
-
-Package: libmrtd0-dbg
-Architecture: any
-Section: debug
-Priority: extra
-Depends: libmrtd0 (= ${binary:Version}),
-         ${misc:Depends}
-Multi-Arch: same
-Description: debug symbols for libmrtd0
- Machine-readable travel documents such as passports nowadays usually contain
- an RFID chip for storing various data. This library provides useful functions
- for reading out the data from these documents. This version of the library
- supports the Basic Access Control (BAC). It uses several cryptographic
- functions from either libgcrypt or libtomcrypt (depending on compile-time
- options) in order to do the necessary decryption of the content of the MRTDs.
- The key for the BAC-scheme is derived from the Machine-readable zone (MRZ)
- which is printed on the MRTD.
- .
- The library depends on libnfc for the hardware interaction and only devices
- supported by libnfc will therefore work.
- .
- This package contains symbol tables for debugging.
 
 Package: mrtdreader
 Architecture: any

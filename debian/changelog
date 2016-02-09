@@ -2,6 +2,11 @@ mrtdreader (0.1.6-1) unstable; urgency=medium
 
   * New upstream release
     - Fixes some issues with UK and US passports at least
+  * debian/control:
+    - Changed Vcs-Git to https url
+    - Removed -dbg package since -dbgsym is automatically built
+  * debian/rules:
+    - Remove override of dh_strip target
 
  -- Ruben Undheim <ruben.undheim@gmail.com>  Tue, 09 Feb 2016 20:12:49 +0100
 
